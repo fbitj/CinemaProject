@@ -1,2 +1,1 @@
-# CinemaProject
-影院微服务项目
+基于Guns的影院微服务项目

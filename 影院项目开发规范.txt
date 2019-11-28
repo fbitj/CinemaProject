@@ -1,0 +1,43 @@
+影院项目规范
+
+影院项目的几个模块介绍：
+guns-geteway ：网关模块
+guns-api ：dubbo公共API微服务接口模块
+guns-user ：用户模块
+guns-film：影片模块
+guns-cinema：影院模块
+
+不同项目模块的端口分配规范（已经写好了）
+guns-gateway：80
+guns-user：8080
+guns-film：8081
+guns-cinema：8082
+
+
+dubbo端口分配规范（已经写好了）
+guns-user：20880
+guns-film：20881
+guns-cinema：20882
+
+
+api模块规范
+service包：放微服务提供的公共接口
+vo包：放controller返回给前端封装的对象
+bo包：放controller接收前端封装的对象（超过三个接收对象才创建bean进行接收）
+
+gateway模块规范
+在modular包中创建了user包、film包和cinema包来存放不同微服务的controller类
+
+三个微服务模块
+service.impl包：存放service的实现类
+mapper接口、mapper.xml、数据库对应的Bean通过代码生成器自动生成，放在对应的包中
+
+数据库规范
+数据库名：guns_rest
+数据库用户名：root
+数据库密码：123456
+
+代码生成注意事项：
+1.只需要把bean、mapper接口、mapper.xml生成在对应包中，其它生成在TTT包中，之后可把TTT包删除。
+2.生成代码时注意按情况修改输出目录、数据库配置、表配置、包配置
+
