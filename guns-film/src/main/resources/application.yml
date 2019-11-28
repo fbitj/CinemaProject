@@ -26,23 +26,13 @@ mybatis-plus:
     multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
 
-spring:
-  application:
-    name: guns-film
-  dubbo:
-    registry: zookeeper://localhost:2181
-    server: true
-    protocal:
-      name: dubbo
-      port: 20881
-  datasource:
-      url: jdbc:mysql://127.0.0.1:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-      username: root
-      password: 123456
-      filters: log4j,wall,mergeStat
 
 logging:
   level.root: info
   level.com.stylefeng: debug
   path: logs/
   file: guns-film.log
+
+spring:
+  profiles:
+    active: confgit
