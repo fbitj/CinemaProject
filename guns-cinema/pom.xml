@@ -8,7 +8,7 @@
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
-    <name>guns-rest</name>
+    <name>guns-cinema</name>
     <description>guns 影院服务</description>
 
     <parent>
