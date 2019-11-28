@@ -19,6 +19,8 @@ public class BaseRespVO<T> {
 
     private String msg;
 
+    private String imgPre;
+
     /**
      * 正常应答，status为0，且msg内容为空
      * @param data 要返回的数据
