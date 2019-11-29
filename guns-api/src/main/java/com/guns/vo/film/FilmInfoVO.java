@@ -1,10 +1,12 @@
-package com.guns.vo;
+package com.guns.vo.film;
 
 import lombok.Data;
 
-@Data
-public class FilmInfoVO {
+import java.io.Serializable;
 
+@Data
+public class FilmInfoVO implements Serializable {
+    private static final long serialVersionUID = 1145219176055399820L;
     private String filmId;
 
     private String imgAddress;
@@ -18,6 +20,8 @@ public class FilmInfoVO {
     private Integer boxNum;
 
     private String score;
+
+    private String filmScore;
 
     private String showTime;
 

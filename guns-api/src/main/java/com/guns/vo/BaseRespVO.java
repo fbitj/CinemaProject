@@ -2,6 +2,8 @@ package com.guns.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Created by fwj on 2019-11-28.
  */
@@ -11,8 +13,10 @@ import lombok.Data;
  * @param <T>
  */
 @Data
-public class BaseRespVO<T> {
+public class BaseRespVO<T> implements Serializable {
 
+    private static final long serialVersionUID = 3905287500805502052L;
+    
     private int status;
 
     private T data;
@@ -43,6 +47,18 @@ public class BaseRespVO<T> {
         BaseRespVO baseRespVO = new BaseRespVO();
         baseRespVO.setStatus(0);
         baseRespVO.setData(data);
+        baseRespVO.setMsg(msg);
+        return baseRespVO;
+    }
+
+    /**
+     * 正常应答，status为0
+     * @param msg 正常返回的msg信息
+     * @return 正常响应对象
+     */
+    public static BaseRespVO ok (String msg) {
+        BaseRespVO baseRespVO = new BaseRespVO();
+        baseRespVO.setStatus(0);
         baseRespVO.setMsg(msg);
         return baseRespVO;
     }

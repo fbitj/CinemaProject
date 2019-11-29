@@ -35,7 +35,7 @@ public class EntityGenerator {
         gc.setEnableCache(false);// XML 二级缓存
         gc.setBaseResultMap(true);// XML ResultMap
         gc.setBaseColumnList(false);// XML columList
-        gc.setAuthor("fwj");
+        gc.setAuthor("Lemon");
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
@@ -49,8 +49,8 @@ public class EntityGenerator {
             }
         });
         dsc.setDriverName("com.mysql.jdbc.Driver");
-        dsc.setUsername("root");
-        dsc.setPassword("123456");
+        dsc.setUsername("Lemon");
+        dsc.setPassword("Lemonfish.");
         dsc.setUrl("jdbc:mysql://127.0.0.1:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8");
         mpg.setDataSource(dsc);
 
