@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "user")
 public class UserController {
 
-    @Reference(interfaceClass = UserService.class)
+    @Reference(interfaceClass = UserService.class, check = false)
     private UserService userService;
 
     @RequestMapping(value = "aaaaaaaaaaa")

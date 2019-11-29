@@ -1,0 +1,89 @@
+package com.stylefeng.guns.rest.modular.film;
+
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.guns.service.film.*;
+import com.guns.vo.*;
+import com.guns.vo.film.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("film")
+public class FilmController {
+
+    @Reference(interfaceClass = BannerService.class)
+    BannerService bannerService;
+
+    @Reference(interfaceClass = FilmService.class)
+    FilmService filmService;
+
+    @Reference(interfaceClass = CatService.class)
+    CatService catService;
+
+    @Reference(interfaceClass = SourceService.class)
+    SourceService sourceService;
+
+    @Reference(interfaceClass = YearService.class)
+    YearService yearService;
+
+    @RequestMapping("getIndex")
+    public BaseRespVO filmIndex() {
+        List<BannerVO> bannerVOList = bannerService.queryBannersIsValid();
+        List<FilmInfoVO> hotFilms = filmService.queryFilmByStatus(1);
+        List<FilmInfoVO> soonFilms = filmService.queryFilmByStatus(2);
+        List<FilmInfoVO> boxFilms = filmService.queryFilmByColumnDesc("film_box_office");
+        List<FilmInfoVO> expectFilms = filmService.queryFilmByColumnDesc("film_preSaleNum");
+        List<FilmInfoVO> highScoreFilms = filmService.queryFilmByColumnDesc("film_score");
+
+        //封装返回参数
+        BaseRespVO baseRespVO = new BaseRespVO();
+
+        HashMap data = new HashMap();
+        data.put("banners",bannerVOList);
+
+        if (hotFilms.size() > 8) {
+            hotFilms = hotFilms.subList(0, 8);
+        }
+        if (soonFilms.size() > 8) {
+            soonFilms = soonFilms.subList(0, 8);
+        }
+        if (boxFilms.size() > 10) {
+            boxFilms = boxFilms.subList(0, 10);
+        }
+        if (expectFilms.size() > 10) {
+            expectFilms = expectFilms.subList(0, 10);
+        }
+        if (highScoreFilms.size() > 10) {
+            highScoreFilms = highScoreFilms.subList(0, 10);
+        }
+        data.put("hotFilms", new FilmResultVO(hotFilms.size(), hotFilms));
+        data.put("soonFilms", new FilmResultVO(soonFilms.size(), soonFilms));
+        data.put("boxRanking", boxFilms);
+        data.put("expectRanking", expectFilms);
+        data.put("top100", highScoreFilms);
+
+        baseRespVO.setData(data);
+        baseRespVO.setImgPre(bannerVOList.get(0).getBannerUrl());
+        baseRespVO.setStatus(0);
+        return baseRespVO;
+    }
+
+    @RequestMapping("getConditionList")
+    public BaseRespVO getConditionList(Integer catId, Integer sourceId, Integer yearId) {
+        List<CatInfoVO> catList = catService.selectAllCat(catId);
+        List<SourceInfoVO> sourceList = sourceService.selectAllSource(sourceId);
+        List<YearInfo> yearList = yearService.selectAllYear(yearId);
+
+        //封装
+        Map result = new HashMap();
+        result.put("catInfo", catList);
+        result.put("sourceInfo", sourceList);
+        result.put("yearInfo", yearList);
+
+        return BaseRespVO.ok(result);
+    }
+}

@@ -2,6 +2,8 @@ package com.guns.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Created by fwj on 2019-11-28.
  */
@@ -11,7 +13,7 @@ import lombok.Data;
  * @param <T>
  */
 @Data
-public class BaseRespVO<T> {
+public class BaseRespVO<T> implements Serializable {
 
     private int status;
 
