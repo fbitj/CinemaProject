@@ -4,6 +4,10 @@ package com.guns.service.film;
 import com.guns.dto.FilmsDTO;
 import com.guns.vo.FilmItemVO;
 import com.guns.vo.FilmListVO;
+import com.guns.vo.film.FilmInfoVO;
+
+import java.util.List;
+
 
 /**
  * Created by fwj on 2019-11-27.
@@ -23,5 +27,10 @@ public interface FilmService {
      * @return
      */
     FilmItemVO getFilmDetail(Integer filmId);
+
+
+    List<FilmInfoVO> queryFilmByStatus(int status);
+
+    List<FilmInfoVO> queryFilmByColumnDesc(String column);
 
 }

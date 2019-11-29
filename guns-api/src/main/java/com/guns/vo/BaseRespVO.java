@@ -14,8 +14,9 @@ import java.io.Serializable;
  */
 @Data
 public class BaseRespVO<T> implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 3905287500805502052L;
+    
     private int status;
 
     private T data;
@@ -46,6 +47,18 @@ public class BaseRespVO<T> implements Serializable {
         BaseRespVO baseRespVO = new BaseRespVO();
         baseRespVO.setStatus(0);
         baseRespVO.setData(data);
+        baseRespVO.setMsg(msg);
+        return baseRespVO;
+    }
+
+    /**
+     * 正常应答，status为0
+     * @param msg 正常返回的msg信息
+     * @return 正常响应对象
+     */
+    public static BaseRespVO ok (String msg) {
+        BaseRespVO baseRespVO = new BaseRespVO();
+        baseRespVO.setStatus(0);
         baseRespVO.setMsg(msg);
         return baseRespVO;
     }

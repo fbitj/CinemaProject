@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.dto.FilmsDTO;
 import com.guns.service.film.FilmService;
 import com.guns.vo.*;
+import com.guns.vo.film.FilmInfoVO;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
 import org.springframework.beans.BeanUtils;
