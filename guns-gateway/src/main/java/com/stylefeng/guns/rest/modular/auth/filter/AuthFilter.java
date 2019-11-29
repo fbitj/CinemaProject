@@ -35,10 +35,18 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
+        //对于一些请求是需要对其进行放行的
+        String[] urls = jwtProperties.getUrls();
+        for (String url : urls) {
+            if(request.getServletPath().contains(url)){
+                chain.doFilter(request,response);
+                return;
+            }
+        }
+     /*   if (request.getServletPath().equals("/" + jwtProperties.getAuthPath())) {
             chain.doFilter(request, response);
             return;
-        }
+        }*/
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
