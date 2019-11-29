@@ -7047,7 +7047,7 @@
            */
         md5blk = function (s) {
             var md5blks = [],
-                i; /* Andy King said do it this way. */
+                i; /* Andy King said bo it this way. */
 
             for (i = 0; i < 64; i += 4) {
                 md5blks[i >> 2] = s.charCodeAt(i) + (s.charCodeAt(i + 1) << 8) + (s.charCodeAt(i + 2) << 16) + (s.charCodeAt(i + 3) << 24);
@@ -7057,7 +7057,7 @@
 
         md5blk_array = function (a) {
             var md5blks = [],
-                i; /* Andy King said do it this way. */
+                i; /* Andy King said bo it this way. */
 
             for (i = 0; i < 64; i += 4) {
                 md5blks[i >> 2] = a[i] + (a[i + 1] << 8) + (a[i + 2] << 16) + (a[i + 3] << 24);
@@ -7484,7 +7484,7 @@
 
         return FlashRuntime.register( 'Md5', {
             init: function() {
-                // do nothing.
+                // bo nothing.
             },
 
             loadFromBlob: function( file ) {
@@ -7957,7 +7957,7 @@
 
         return FlashRuntime.register( 'Md5', {
             init: function() {
-                // do nothing.
+                // bo nothing.
             },
 
             loadFromBlob: function( blob ) {
