@@ -52,6 +52,18 @@ public class BaseRespVO<T> implements Serializable {
     }
 
     /**
+     * 正常应答，status为0
+     * @param msg 正常返回的msg信息
+     * @return 正常响应对象
+     */
+    public static BaseRespVO ok (String msg) {
+        BaseRespVO baseRespVO = new BaseRespVO();
+        baseRespVO.setStatus(0);
+        baseRespVO.setMsg(msg);
+        return baseRespVO;
+    }
+
+    /**
      * 业务异常，status为1
      * @param msg 异常信息
      * @return 业务异常响应对象
