@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,10 +39,17 @@ public class FilmServiceImpl implements FilmService{
         //封装
         List<FilmInfoVO> filmInfoVOS = new ArrayList<>();
         if (!CollectionUtils.isEmpty(mtimeFilmTList)){
+            if (mtimeFilmTList.size() > 8) {
+                //限制返回条目数
+                mtimeFilmTList = mtimeFilmTList.subList(0,8);
+            }
             for (MtimeFilmT mtimeFilmT : mtimeFilmTList) {
                 FilmInfoVO filmInfoVO = new FilmInfoVO();
                 BeanUtils.copyProperties(mtimeFilmT,filmInfoVO);
                 filmInfoVO.setFilmId(mtimeFilmT.getUuid().toString());
+                Date filmTime = mtimeFilmT.getFilmTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                filmInfoVO.setShowTime(simpleDateFormat.format(filmTime));
                 filmInfoVOS.add(filmInfoVO);
             }
         }
@@ -61,6 +70,10 @@ public class FilmServiceImpl implements FilmService{
 
         List<FilmInfoVO> filmInfoVOS = new ArrayList<>();
         if (!CollectionUtils.isEmpty(mtimeFilmTS)) {
+            if (mtimeFilmTS.size() > 10) {
+                //显示返回条目数
+                mtimeFilmTS = mtimeFilmTS.subList(0,10);
+            }
             for (MtimeFilmT mtimeFilmT : mtimeFilmTS) {
                 FilmInfoVO filmInfoVO = new FilmInfoVO();
                 BeanUtils.copyProperties(mtimeFilmT,filmInfoVO);

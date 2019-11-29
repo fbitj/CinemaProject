@@ -44,22 +44,6 @@ public class FilmController {
 
         HashMap data = new HashMap();
         data.put("banners",bannerVOList);
-
-        if (hotFilms.size() > 8) {
-            hotFilms = hotFilms.subList(0, 8);
-        }
-        if (soonFilms.size() > 8) {
-            soonFilms = soonFilms.subList(0, 8);
-        }
-        if (boxFilms.size() > 10) {
-            boxFilms = boxFilms.subList(0, 10);
-        }
-        if (expectFilms.size() > 10) {
-            expectFilms = expectFilms.subList(0, 10);
-        }
-        if (highScoreFilms.size() > 10) {
-            highScoreFilms = highScoreFilms.subList(0, 10);
-        }
         data.put("hotFilms", new FilmResultVO(hotFilms.size(), hotFilms));
         data.put("soonFilms", new FilmResultVO(soonFilms.size(), soonFilms));
         data.put("boxRanking", boxFilms);
