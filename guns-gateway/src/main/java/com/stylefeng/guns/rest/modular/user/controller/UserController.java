@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.bo.UserInfoBO;
 import com.guns.service.user.UserService;
 import com.guns.vo.BaseRespVO;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "user")
 public class UserController {
 
-    @Reference(interfaceClass = UserService.class)
+    @Reference(interfaceClass = UserService.class, check = false)
     private UserService userService;
 
     /**
