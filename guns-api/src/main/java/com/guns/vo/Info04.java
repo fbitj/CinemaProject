@@ -6,10 +6,12 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FilmVO implements Serializable {
+public class Info04 implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer filmNum;
+    String biography;
 
-    private List<FilmInfoVO> filmInfo;
+    DirictorVO director;
+
+    List<ActorVO> actors;
 }

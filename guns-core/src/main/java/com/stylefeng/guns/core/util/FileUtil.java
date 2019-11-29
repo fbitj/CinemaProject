@@ -32,7 +32,7 @@ public class FileUtil {
             channel = fs.getChannel();
             ByteBuffer byteBuffer = ByteBuffer.allocate((int) channel.size());
             while ((channel.read(byteBuffer)) > 0) {
-                // do nothing
+                // bo nothing
                 // System.out.println("reading");
             }
             return byteBuffer.array();

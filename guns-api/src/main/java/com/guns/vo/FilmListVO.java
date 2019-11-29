@@ -6,10 +6,11 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FilmVO implements Serializable {
+public class FilmListVO<T> extends BaseRespVO<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Integer filmNum;
+    private Integer nowPage;
 
-    private List<FilmInfoVO> filmInfo;
+    private Integer totalPage;
+
 }
