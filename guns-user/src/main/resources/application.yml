@@ -37,8 +37,8 @@ spring:
       port: 20880
   datasource:
       url: jdbc:mysql://127.0.0.1:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-      username: Lemon
-      password: Lemonfish.
+      username: root
+      password: 123456
       filters: log4j,wall,mergeStat
 
 logging:
