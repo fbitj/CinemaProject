@@ -2,7 +2,7 @@ package com.guns.service.film;
 
 
 import com.guns.dto.FilmsDTO;
-import com.guns.vo.FilmItemVO;
+import com.guns.vo.film.FilmItemVO;
 import com.guns.vo.FilmListVO;
 import com.guns.vo.film.FilmInfoVO;
 

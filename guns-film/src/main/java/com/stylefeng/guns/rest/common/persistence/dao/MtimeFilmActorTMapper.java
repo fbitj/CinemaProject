@@ -1,6 +1,6 @@
 package com.stylefeng.guns.rest.common.persistence.dao;
 
-import com.guns.vo.ActorVO;
+import com.guns.vo.film.ActorVO;
 import com.stylefeng.guns.rest.common.persistence.model.MtimeFilmActorT;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 

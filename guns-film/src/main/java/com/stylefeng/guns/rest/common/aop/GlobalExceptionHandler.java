@@ -37,7 +37,9 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
     @ExceptionHandler(FilmException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public ErrorTip filmException(){
+    public ErrorTip filmException(FilmException e){
+        e.printStackTrace();
         return new ErrorTip(BizExceptionEnum.FILM_ERROR.getCode(), BizExceptionEnum.FILM_ERROR.getMessage());
     }
+
 }
