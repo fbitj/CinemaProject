@@ -193,6 +193,13 @@ public class MtimeFilmServiceImpl implements FilmService {
         EntityWrapper<MtimeFilmT> wrapper = new EntityWrapper<>();
         wrapper.orderBy(column, false);
 
+        if ("film_box_office".equals(column)) {
+            wrapper.eq("film_status", 1);
+        }
+        if ("film_preSaleNum".equals(column)) {
+            wrapper.eq("film_status", 2);
+        }
+
         List<MtimeFilmT> mtimeFilmTS = mtimeFilmTMapper.selectList(wrapper);
 
         List<FilmInfoVO> filmInfoVOS = new ArrayList<>();
