@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.service.impl;
+package com.stylefeng.guns.rest.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -188,6 +188,13 @@ public class MtimeFilmServiceImpl implements FilmService {
     public List<FilmInfoVO> queryFilmByColumnDesc(String column) {
         EntityWrapper<MtimeFilmT> wrapper = new EntityWrapper<>();
         wrapper.orderBy(column, false);
+
+        if ("film_box_office".equals(column)) {
+            wrapper.eq("film_status", 1);
+        }
+        if ("film_preSaleNum".equals(column)) {
+            wrapper.eq("film_status", 2);
+        }
 
         List<MtimeFilmT> mtimeFilmTS = mtimeFilmTMapper.selectList(wrapper);
 

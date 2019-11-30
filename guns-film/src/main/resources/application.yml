@@ -10,7 +10,7 @@ jwt:
   md5-key: randomKey      #md5加密混淆key
 
 server:
-  port: 8081 #项目端口
+  port: 8082 #项目端口
 
 mybatis-plus:
   mapper-locations: classpath*:com/stylefeng/guns/rest/**/mapping/*.xml
@@ -32,7 +32,7 @@ spring:
   dubbo:
     registry: zookeeper://192.168.48.5:2181
     server: true
-    protocal:
+    protocol:
       name: dubbo
       port: 20881
   datasource:

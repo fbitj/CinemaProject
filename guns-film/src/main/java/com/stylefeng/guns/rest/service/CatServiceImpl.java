@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.service.impl;
+package com.stylefeng.guns.rest.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.guns.service.film.CatService;

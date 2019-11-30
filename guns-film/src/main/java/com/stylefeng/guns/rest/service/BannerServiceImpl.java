@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.service.impl;
+package com.stylefeng.guns.rest.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -35,9 +35,10 @@ public class BannerServiceImpl implements BannerService {
         if (!CollectionUtils.isEmpty(banners)) {
             for (MtimeBannerT banner : banners) {
                 BannerVO bannerVO = new BannerVO();
-                String bannerAddress = banner.getBannerAddress();
+                /*String bannerAddress = banner.getBannerAddress();
                 String[] split = bannerAddress.split("/");
-                bannerVO.setBannerAddress(split[1]);
+                bannerVO.setBannerAddress(split[1]);*/
+                bannerVO.setBannerAddress(banner.getBannerAddress());
                 bannerVO.setBannerUrl(banner.getBannerUrl());
                 bannerVO.setBannerId(banner.getUuid().toString());
                 bannerVOS.add(bannerVO);

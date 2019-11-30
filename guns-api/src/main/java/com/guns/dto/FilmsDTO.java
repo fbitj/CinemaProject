@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 @Data
 public class FilmsDTO implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     private Integer showType = 1;
