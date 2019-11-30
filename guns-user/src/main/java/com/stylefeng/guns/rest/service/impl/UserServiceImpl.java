@@ -102,9 +102,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserCacheVO login(String userName, String password) {
+        String encryptPwd = Md5Utils.getDefaultMd5Encrypt(password);
         EntityWrapper<MtimeUserT> wrapper = new EntityWrapper<>();
         wrapper.eq("user_name", userName);
-        wrapper.eq("user_pwd", password);
+        wrapper.eq("user_pwd", encryptPwd);
         List<MtimeUserT> mtimeUserTS = mtimeUserTMapper.selectList(wrapper);
         // 没有查询出用户数据返回null
         if (CollectionUtils.isEmpty(mtimeUserTS)) {
