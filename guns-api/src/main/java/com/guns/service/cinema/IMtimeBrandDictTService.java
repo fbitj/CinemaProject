@@ -5,6 +5,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -20,4 +21,6 @@ public interface IMtimeBrandDictTService extends Serializable {
     //List getCinemaNames(Integer bid);
 
     List getCinemas(Integer brandId, Integer districtId, Integer hallType);
+
+
 }

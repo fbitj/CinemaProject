@@ -5,12 +5,14 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.service.cinema.IMtimeBrandDictTService;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.service.cinema.IMtimeFieldTService;
+import com.guns.vo.BaseRespVO;
 import com.guns.vo.cinema.GetCinemasVo;
 import com.guns.vo.cinema.GetFieldInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Cats-Fish
@@ -28,6 +30,13 @@ public class CinemaController {
     @Reference(interfaceClass = IMtimeFieldTService.class, check = false)
     IMtimeFieldTService fieldTService;
 
+    //tf
+/*
+    @Reference(interfaceClass = IMtimeCinemaTService.class)
+    IMtimeCinemaTService cinemaTService;
+    @Reference(interfaceClass = IMtimeFieldTService.class)
+    IMtimeFieldTService fieldTService;
+*/
 
 
     //根据条件，查询所有影院
@@ -114,4 +123,28 @@ public class CinemaController {
         return fieldInfo;
     }
 
+    //tf
+    @RequestMapping("getCondition")
+    public BaseRespVO getCinema(Integer brandId, Integer hallType, Integer areaId) {
+        Map<String, Object> cinema = cinemaTService.getCinema(brandId, hallType, areaId);
+        if(cinema != null) {
+            return BaseRespVO.ok(cinema);
+        }
+        if(cinema == null) {
+            return BaseRespVO.buzError("影院信息查询失败");
+        }
+        return BaseRespVO.sysError();
+    }
+
+    @RequestMapping("getFields")
+    public BaseRespVO getFields(Integer cinemaId) {
+        Map<String, Object> field = fieldTService.selectFild(cinemaId);
+        if(field != null) {
+            return BaseRespVO.ok(field);
+        }
+        if(field == null) {
+            return BaseRespVO.buzError("影院信息查询失败");
+        }
+        return BaseRespVO.sysError();
+    }
 }
