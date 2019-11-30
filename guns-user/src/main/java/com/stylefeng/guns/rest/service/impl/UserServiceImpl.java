@@ -1,5 +1,4 @@
-package com.stylefeng.guns.rest.service.Impl;
-
+package com.stylefeng.guns.rest.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.bo.UserInfoBO;
