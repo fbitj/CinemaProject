@@ -5,6 +5,6 @@ spring:
     registry: zookeeper://localhost:2181
   datasource:
     url: jdbc:mysql://192.168.48.5:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-    username: root
-    password: 123456
+    username: Lemon
+    password: Lemonfish.
     filters: log4j,wall,mergeStat

@@ -29,7 +29,7 @@ public class EntityGenerator {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir("D:\\Program_Software\\IntelliJ_IDEA\\GunsProjects\\cinema\\guns\\guns-rest\\src\\test\\java");//这里写你自己的java目录
+        gc.setOutputDir("E:\\project3-cinema\\CinemaProject\\guns-user\\src\\main\\java");//这里写你自己的java目录
         gc.setFileOverride(true);//是否覆盖
         gc.setActiveRecord(true);
         gc.setEnableCache(false);// XML 二级缓存

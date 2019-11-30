@@ -8,10 +8,10 @@ guns-film：影片模块
 guns-cinema：影院模块
 
 不同项目模块的端口分配规范（已经写好了）
-guns-gateway：80
-guns-user：8080
-guns-film：8081
-guns-cinema：8082
+guns-gateway：8080
+guns-user：8081
+guns-film：8082
+guns-cinema：8083
 
 
 dubbo端口分配规范（已经写好了）

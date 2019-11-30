@@ -6,6 +6,7 @@ import com.guns.dto.FilmsDTO;
 import com.guns.service.film.FilmService;
 import com.guns.vo.*;
 import com.guns.vo.film.FilmInfoVO;
+import com.stylefeng.guns.rest.common.exception.FilmException;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
 import org.springframework.beans.BeanUtils;
@@ -86,19 +87,34 @@ public class MtimeFilmServiceImpl implements FilmService {
      * @return
      */
     public FilmItemVO getFilmDetail(Integer filmId) {
-        // 1.通过影片id查询filmInfo表
-        MtimeFilmInfoT mtimeFilmInfoT = selectFIlmInfoByFilmId(filmId);
-        // 2.通过影片id查询film表
-        MtimeFilmT film = mtimeFilmTMapper.selectById(filmId);
-        // 查询导演
-        DirictorVO director = selectDirectorByActorId(mtimeFilmInfoT.getDirectorId());
-        // 通过filmid查询mtime_hall_film_info_t表
-        MtimeHallFilmInfoT hallFilmInfoT = selectHallFilmInfoByFilmId(filmId);
-        // 通过影片id演员：mtime_film_actor_t mtime_actor_t
-        // 通过演员id查询演员信息
-        List<ActorVO> actors = selectActorsByActorNames(filmId);
-        // 通过影片区域id查询片源
-        String showName = selectFilmSourceByFilmId(film.getFilmSource());
+        MtimeFilmInfoT mtimeFilmInfoT = null;
+        MtimeFilmT film = null;
+        DirictorVO director = null;
+        MtimeHallFilmInfoT hallFilmInfoT = null;
+        List<ActorVO> actors = null;
+        String showName = null;
+        String date = null;
+        try {
+            // 1.通过影片id查询filmInfo表
+            mtimeFilmInfoT = selectFIlmInfoByFilmId(filmId);
+            // 2.通过影片id查询film表
+            film = mtimeFilmTMapper.selectById(filmId);
+            // 查询导演
+            director = selectDirectorByActorId(mtimeFilmInfoT.getDirectorId());
+            // 通过filmid查询mtime_hall_film_info_t表
+            hallFilmInfoT = selectHallFilmInfoByFilmId(filmId);
+            // 通过影片id演员：mtime_film_actor_t mtime_actor_t
+            // 通过演员id查询演员信息
+            actors = selectActorsByActorNames(filmId);
+            // 通过影片区域id查询片源
+            showName = selectFilmSourceByFilmId(film.getFilmSource());
+            // 日期格式转化
+            Date filmTime = film.getFilmTime();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            date = simpleDateFormat.format(filmTime);
+        } catch (Exception e) {
+            throw new FilmException();
+        }
         // 封装影片信息
         FilmItemInfoVO filmItemInfoVO = new FilmItemInfoVO();
         filmItemInfoVO.setFilmName(film.getFilmName());
@@ -109,9 +125,7 @@ public class MtimeFilmServiceImpl implements FilmService {
         filmItemInfoVO.setTotalBox(film.getFilmBoxOffice());
         filmItemInfoVO.setInfo01(hallFilmInfoT.getFilmCats());
         filmItemInfoVO.setInfo02(showName + " / " + mtimeFilmInfoT.getFilmLength() + "分钟");
-        Date filmTime = film.getFilmTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String date = simpleDateFormat.format(filmTime);
+
         filmItemInfoVO.setInfo03(date + " / " + showName + "上映");
         Info04 info04 = new Info04();
         info04.setBiography(mtimeFilmInfoT.getBiography());
@@ -135,6 +149,7 @@ public class MtimeFilmServiceImpl implements FilmService {
         filmItemVO.setFilmId(film.getUuid());
         return filmItemVO;
     }
+
 
 
     /**
@@ -198,6 +213,7 @@ public class MtimeFilmServiceImpl implements FilmService {
         }
         return filmInfoVOS;
     }
+
 
 
     private DirictorVO selectDirectorByActorId(Integer directorId) {
