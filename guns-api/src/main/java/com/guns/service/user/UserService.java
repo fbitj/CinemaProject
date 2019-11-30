@@ -2,6 +2,7 @@ package com.guns.service.user;
 
 
 import com.guns.bo.UserInfoBO;
+import com.guns.vo.UserCacheVO;
 import com.guns.vo.UserInfoVo;
 
 /**
@@ -20,4 +21,5 @@ public interface UserService {
 
     int updateUserInfo(UserInfoVo userInfoVo);
 
+    UserCacheVO login(String userName, String password);
 }

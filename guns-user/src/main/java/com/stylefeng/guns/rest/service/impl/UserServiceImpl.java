@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.bo.UserInfoBO;
 import com.guns.service.user.UserService;
 import com.guns.utils.Md5Utils;
+import com.guns.vo.UserCacheVO;
 import com.guns.vo.UserInfoVo;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeUserTMapper;
 import com.stylefeng.guns.rest.common.persistence.model.MtimeUserT;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -50,7 +52,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoVo selectUserInfoVo(String username) {
         UserInfoVo userInfoVo = new UserInfoVo();
         EntityWrapper<MtimeUserT> wrapper = new EntityWrapper<>();
-        List<MtimeUserT> mtimeUserTList = mtimeUserTMapper.selectList(wrapper.gt("user_name", username));
+        List<MtimeUserT> mtimeUserTList = mtimeUserTMapper.selectList(wrapper.eq("user_name", username));
         if (!CollectionUtils.isEmpty(mtimeUserTList)){
             for (MtimeUserT mtimeUserT : mtimeUserTList) {
                 userInfoVo.setUuid(mtimeUserT.getUuid());
@@ -87,5 +89,21 @@ public class UserServiceImpl implements UserService {
         mtimeUserT.setUserSex(userInfoVo.getSex());
         Integer integer = mtimeUserTMapper.updateAllColumnById(mtimeUserT);
         return integer;
+    }
+
+    @Override
+    public UserCacheVO login(String userName, String password) {
+        EntityWrapper<MtimeUserT> wrapper = new EntityWrapper<>();
+        wrapper.eq("user_name", userName);
+        wrapper.eq("user_pwd", password);
+        List<MtimeUserT> mtimeUserTS = mtimeUserTMapper.selectList(wrapper);
+        // 没有查询出用户数据返回null
+        if (CollectionUtils.isEmpty(mtimeUserTS)) {
+            return null;
+        }
+        // 返回UserInfoVO用户数据
+        UserCacheVO userCacheVO = new UserCacheVO();
+        BeanUtils.copyProperties(mtimeUserTS.get(0), userCacheVO);
+        return userCacheVO;
     }
 }

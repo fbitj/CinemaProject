@@ -5,14 +5,18 @@ import com.guns.bo.UserInfoBO;
 import com.guns.service.user.UserService;
 import com.guns.vo.BaseRespVO;
 
+import com.guns.vo.UserCacheVO;
 import com.guns.vo.UserInfoVo;
 import com.stylefeng.guns.rest.common.exception.CustomException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 
@@ -24,6 +28,9 @@ public class UserController {
 
     @Reference(interfaceClass = UserService.class, check = false)
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 用户注册
@@ -61,10 +68,13 @@ public class UserController {
         return BaseRespVO.sysError();
     }
 
+
     @RequestMapping(value = "getUserInfo")
-    public BaseRespVO<UserInfoVo> getUserInfo() throws CustomException {
+    public BaseRespVO<UserInfoVo> getUserInfo(HttpServletRequest request) throws CustomException {
+        String token = (String) request.getAttribute("token");
+        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
         BaseRespVO<UserInfoVo> repv = new BaseRespVO<>();
-        String username = "admin";
+        String username = userCacheVO.getUserName();
         UserInfoVo userInfoVo = userService.selectUserInfoVo(username);
         if (userInfoVo == null) {
             throw new CustomException(1, "查询失败,用户尚未登录");
@@ -75,6 +85,7 @@ public class UserController {
         return repv;
 
     }
+
 
     @RequestMapping("updateUserInfo")
     public BaseRespVO<UserInfoVo> updateUserInfo(UserInfoVo userInfoVo) throws CustomException {
@@ -92,5 +103,15 @@ public class UserController {
         } else {
             throw new CustomException(999, "系统出现异常，请联系管理员");
         }
+    }
+
+    // 用户登出
+    @RequestMapping("logout")
+    public BaseRespVO logout(HttpServletRequest request) {
+        // 从reqeust域中，获得请求头中携带的token信息
+        String token = (String) request.getAttribute("token");
+        // 在Redis中删除该用户信息
+        Boolean delete = redisTemplate.delete(token);
+        return BaseRespVO.ok("成功退出");
     }
 }
