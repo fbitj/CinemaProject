@@ -5,11 +5,15 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.service.cinema.IMtimeBrandDictTService;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.service.cinema.IMtimeFieldTService;
+import com.guns.vo.UserCacheVO;
 import com.guns.vo.cinema.GetCinemasVo;
 import com.guns.vo.cinema.GetFieldInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -27,10 +31,12 @@ public class CinemaController {
     IMtimeCinemaTService cinemaTService;
     @Reference(interfaceClass = IMtimeFieldTService.class, check = false)
     IMtimeFieldTService fieldTService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
 
 
-    //根据条件，查询所有影院
+    //根据条件，查询所有影院       cinema/getCondition?brandId=99&hallType=99&areaId=99
     /**
      * request                  pageSize 每页条数   nowPage 当前页数
      * /cinema/getCinemas?  brandId=30227   districtId=14   hallType=2
@@ -105,9 +111,13 @@ public class CinemaController {
      * @return
      */
     @RequestMapping("getFieldInfo")
-    public GetFieldInfo getFieldInfo(Integer cinemaId, Integer fieldId){
+    public GetFieldInfo getFieldInfo(Integer cinemaId, Integer fieldId, HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+        //从redis缓存中取得用户的uuid
+        Integer uuid = userCacheVO.getUuid();
         GetFieldInfo<Object> fieldInfo = new GetFieldInfo<>();
-        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId);
+        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,uuid);
         fieldInfo.setStatus(0);
         fieldInfo.setImgPre("http://img.meetingshop.cn/");
         fieldInfo.setData(fieldMessage);

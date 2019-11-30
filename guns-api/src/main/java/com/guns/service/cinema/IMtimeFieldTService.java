@@ -14,5 +14,5 @@ import java.io.Serializable;
 //@Service(interfaceClass = IMtimeFieldTService.class)
 public interface IMtimeFieldTService extends Serializable {
 
-    Object getFieldMessage(Integer cinemaId, Integer fieldId);
+    Object getFieldMessage(Integer cinemaId, Integer fieldId,Integer uuid);
 }
