@@ -6,6 +6,7 @@ import com.guns.service.cinema.IMtimeBrandDictTService;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.service.cinema.IMtimeFieldTService;
 import com.guns.vo.UserCacheVO;
+import com.guns.vo.BaseRespVO;
 import com.guns.vo.cinema.GetCinemasVo;
 import com.guns.vo.cinema.GetFieldInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Cats-Fish
@@ -34,9 +36,17 @@ public class CinemaController {
     @Autowired
     RedisTemplate redisTemplate;
 
+    //tf
+/*
+    @Reference(interfaceClass = IMtimeCinemaTService.class)
+    IMtimeCinemaTService cinemaTService;
+    @Reference(interfaceClass = IMtimeFieldTService.class)
+    IMtimeFieldTService fieldTService;
+*/
 
 
-    //根据条件，查询所有影院       cinema/getCondition?brandId=99&hallType=99&areaId=99
+    //根据条件，查询所有影院       http://localhost/cinema/getCinemas?
+    // brandId=99  hallType=99  areaId=99  pageSize=12  nowPage=1
     /**
      * request                  pageSize 每页条数   nowPage 当前页数
      * /cinema/getCinemas?  brandId=30227   districtId=14   hallType=2
@@ -62,9 +72,9 @@ public class CinemaController {
      * }
      */
     @RequestMapping("getCinemas")
-    public GetCinemasVo getCinemas(Integer brandId, Integer districtId, Integer hallType){
+    public GetCinemasVo getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize, Integer nowPage){
         GetCinemasVo<Object> cinemasVo = new GetCinemasVo<>();
-        List cinemas = brandDictTService.getCinemas(brandId, districtId, hallType);
+        List cinemas = brandDictTService.getCinemas(brandId, areaId, hallType);
         cinemasVo.setStatus(0);
         cinemasVo.setNowPage(1);
         cinemasVo.setTotalPage(cinemas.size());
@@ -112,16 +122,40 @@ public class CinemaController {
      */
     @RequestMapping("getFieldInfo")
     public GetFieldInfo getFieldInfo(Integer cinemaId, Integer fieldId, HttpServletRequest request){
-        String token = request.getHeader("Authorization");
-        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
-        //从redis缓存中取得用户的uuid
-        Integer uuid = userCacheVO.getUuid();
+//        String token = request.getHeader("Authorization");
+//        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+//        从redis缓存中取得用户的uuid
+//        Integer uuid = userCacheVO.getUuid();
         GetFieldInfo<Object> fieldInfo = new GetFieldInfo<>();
-        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,uuid);
+        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,1);
         fieldInfo.setStatus(0);
         fieldInfo.setImgPre("http://img.meetingshop.cn/");
         fieldInfo.setData(fieldMessage);
         return fieldInfo;
     }
 
+    //tf
+    @RequestMapping("getCondition")
+    public BaseRespVO getCinema(Integer brandId, Integer hallType, Integer areaId) {
+        Map<String, Object> cinema = cinemaTService.getCinema(brandId, hallType, areaId);
+        if(cinema != null) {
+            return BaseRespVO.ok(cinema);
+        }
+        if(cinema == null) {
+            return BaseRespVO.buzError("影院信息查询失败");
+        }
+        return BaseRespVO.sysError();
+    }
+
+    @RequestMapping("getFields")
+    public BaseRespVO getFields(Integer cinemaId) {
+        Map<String, Object> field = fieldTService.selectFild(cinemaId);
+        if(field != null) {
+            return BaseRespVO.ok(field);
+        }
+        if(field == null) {
+            return BaseRespVO.buzError("影院信息查询失败");
+        }
+        return BaseRespVO.sysError();
+    }
 }

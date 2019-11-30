@@ -73,10 +73,12 @@ public class MtimeBrandDictTServiceImpl implements IMtimeBrandDictTService , Ser
         ArrayList<Object> list = new ArrayList<>();
         List<MtimeBrandDictT> cinemaName = this.getCN(brandId);
         List<MtimeCinemaT> addressPrice = cinemaTService.getAddressPrice(districtId);
-
+        if(cinemaName.size() == 0 || addressPrice.size() == 0){
+            return new ArrayList();
+        }
         for (MtimeBrandDictT brandDictT : cinemaName) {
             for (MtimeCinemaT cinemaT : addressPrice) {
-                if(hallType != 99){
+                if(hallType != null && hallType != 99){
                     ArrayList<Integer> integers = String2Array.string2Array(cinemaT.getHallIds());
                     for (Integer integer : integers) {
                         if(integer == hallType){
@@ -86,25 +88,27 @@ public class MtimeBrandDictTServiceImpl implements IMtimeBrandDictTService , Ser
                                 Integer uuid = brandDictT.getUuid();
                                 map.put("uuid",uuid);
                                 map.put("cinemaName",showName);
-                                map.put("address",cinemaT.getCinemaAddress());
+                                map.put("cinemaAddress",cinemaT.getCinemaAddress());
                                 map.put("minimumPrice",cinemaT.getMinimumPrice());
                                 list.add(map);
                             }
                         }
                     }
-                }
-                if(cinemaT.getBrandId() == brandDictT.getUuid()){
-                    HashMap<Object, Object> map = new HashMap<>();
-                    String showName = cinemaT.getCinemaName();
-                    Integer uuid = brandDictT.getUuid();
-                    map.put("uuid",uuid);
-                    map.put("cinemaName",showName);
-                    map.put("address",cinemaT.getCinemaAddress());
-                    map.put("minimumPrice",cinemaT.getMinimumPrice());
-                    list.add(map);
+                }else if(hallType != null) {
+                    if (cinemaT.getBrandId() == brandDictT.getUuid()) {
+                        HashMap<Object, Object> map = new HashMap<>();
+                        String showName = cinemaT.getCinemaName();
+                        Integer uuid = brandDictT.getUuid();
+                        map.put("uuid", uuid);
+                        map.put("cinemaName", showName);
+                        map.put("cinemaAddress", cinemaT.getCinemaAddress());
+                        map.put("minimumPrice", cinemaT.getMinimumPrice());
+                        list.add(map);
+                    }
                 }
             }
         }
         return list;
     }
+
 }

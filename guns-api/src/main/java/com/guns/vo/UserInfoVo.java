@@ -16,8 +16,8 @@ public class UserInfoVo implements Serializable {
    private String nickname;
    private String email;
    private String phone;
-   private int  sex;
-   private  String birthday;
+   private Integer  sex;
+   private String birthday;
    private Integer lifeState;
    private String biography;
    private String address;

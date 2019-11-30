@@ -4,7 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.dto.FilmsDTO;
 import com.guns.service.film.*;
 import com.guns.vo.BaseRespVO;
-import com.guns.vo.FilmItemVO;
+import com.guns.vo.film.FilmItemVO;
 import com.guns.vo.FilmListVO;
 import com.guns.vo.film.*;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -3,6 +3,7 @@ package com.guns.service.cinema;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -18,5 +19,10 @@ public interface IMtimeCinemaTService extends Serializable {
     List getAddressPrice(Integer brandId);
 
     Object getCine(Integer uuid);
+
+    //tf
+    //获取影院列表查询条件
+    Map<String, Object> getCinema(Integer brandId, Integer hallType, Integer areaId);
+
 
 }
