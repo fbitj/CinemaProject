@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class AreaResp implements Serializable {
-    private Integer AreaId;
-    private String AreaName;
+    private Integer areaId;
+    private String areaName;
     private boolean active;
 }

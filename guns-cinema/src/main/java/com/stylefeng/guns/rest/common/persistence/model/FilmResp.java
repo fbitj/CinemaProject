@@ -14,5 +14,5 @@ public class FilmResp implements Serializable {
     private String filmName;
     private String filmType;
     private String imgAddress;
-    private List<FilmField> filmFilds;
+    private List<FilmField> filmFields;
 }

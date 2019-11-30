@@ -1,7 +1,10 @@
 package com.stylefeng.guns.rest.service;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.guns.service.cinema.*;
+import com.stylefeng.guns.rest.common.persistence.dao.MtimeFieldTMapper;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.service.cinema.IMtimeFieldTService;
 import com.guns.service.cinema.IMtimeHallDictTService;
@@ -38,6 +41,8 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
     IMtimeCinemaTService cinemaTService;
     @Autowired
     IMtimeHallDictTService hallDictTService;
+    @Reference(interfaceClass = IMoocOrderTService.class, check = false)
+    IMoocOrderTService orderTService;
 
     //tf
     @Autowired
@@ -48,7 +53,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
     MtimeFieldTMapper fieldTMapper;*/
 
     @Override
-    public Object getFieldMessage(Integer cinemaId, Integer fieldId) {
+    public Object getFieldMessage(Integer cinemaId, Integer fieldId, Integer uuid) {
         HashMap<Object, Object> map = new HashMap<>();
         EntityWrapper<MtimeFieldT> wrapper = new EntityWrapper<>();
         wrapper.eq("UUID", fieldId);
@@ -81,7 +86,17 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
         map3.put("price",mtimeFieldT.getPrice());
         MtimeHallDictT gethall = (MtimeHallDictT) hallDictTService.gethall(mtimeFieldT.getHallId());
         map3.put("seatFile",gethall.getSeatAddress());
-        map3.put("soldSeats","");//已购票座位,  完成订单后实现
+        List<MoocOrderT> orders = (List<MoocOrderT>) orderTService.getOrders(cinemaId, fieldId, o.getFilmId(), 1);
+        if(orders.size() == 0){
+            map3.put("soldSeats","");
+        }else{
+            StringBuffer sb = new StringBuffer();
+            for (MoocOrderT order : orders) {
+                sb.append(order.getSeatsIds()).append(",");
+            }
+            map3.put("soldSeats",sb.toString().substring(0,sb.toString().length() - 1));
+        }
+//        map3.put("soldSeats","");//已购票座位,  完成订单后实现
         map.put("hallInfo",map3);
         return map;
     }
@@ -120,7 +135,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
         cinemaInfo.setCinemaName(cinemaT.getCinemaName());
         cinemaInfo.setCinemaAdress(cinemaT.getCinemaAddress());
         cinemaInfo.setCinemaPhone(cinemaT.getCinemaPhone());
-        cinemaInfo.setImgAddress(cinemaT.getImgAddress());
+        cinemaInfo.setImgUrl(cinemaT.getImgAddress());
         return cinemaInfo;
     }
 
@@ -180,7 +195,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
                 //封装LIst<FilmField>
                 //根据film_id封装对应电影的场次
                 List<FilmField> filmFields = packageFilmField(fieldTS, filmInfoT.getFilmLanguage(), filmInfoT.getFilmId());
-                filmResp.setFilmFilds(filmFields);
+                filmResp.setFilmFields(filmFields);
                 filmResps.add(filmResp);
                 //把本次封装的电影id赋给叛别变量
                 filmId = filmInfoT.getFilmId();

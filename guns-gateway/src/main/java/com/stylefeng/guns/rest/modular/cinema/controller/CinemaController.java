@@ -5,12 +5,16 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.service.cinema.IMtimeBrandDictTService;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.service.cinema.IMtimeFieldTService;
+import com.guns.vo.UserCacheVO;
 import com.guns.vo.BaseRespVO;
 import com.guns.vo.cinema.GetCinemasVo;
 import com.guns.vo.cinema.GetFieldInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +33,8 @@ public class CinemaController {
     IMtimeCinemaTService cinemaTService;
     @Reference(interfaceClass = IMtimeFieldTService.class, check = false)
     IMtimeFieldTService fieldTService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     //tf
 /*
@@ -39,7 +45,8 @@ public class CinemaController {
 */
 
 
-    //根据条件，查询所有影院
+    //根据条件，查询所有影院       http://localhost/cinema/getCinemas?
+    // brandId=99  hallType=99  areaId=99  pageSize=12  nowPage=1
     /**
      * request                  pageSize 每页条数   nowPage 当前页数
      * /cinema/getCinemas?  brandId=30227   districtId=14   hallType=2
@@ -65,9 +72,9 @@ public class CinemaController {
      * }
      */
     @RequestMapping("getCinemas")
-    public GetCinemasVo getCinemas(Integer brandId, Integer districtId, Integer hallType){
+    public GetCinemasVo getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize, Integer nowPage){
         GetCinemasVo<Object> cinemasVo = new GetCinemasVo<>();
-        List cinemas = brandDictTService.getCinemas(brandId, districtId, hallType);
+        List cinemas = brandDictTService.getCinemas(brandId, areaId, hallType);
         cinemasVo.setStatus(0);
         cinemasVo.setNowPage(1);
         cinemasVo.setTotalPage(cinemas.size());
@@ -114,9 +121,13 @@ public class CinemaController {
      * @return
      */
     @RequestMapping("getFieldInfo")
-    public GetFieldInfo getFieldInfo(Integer cinemaId, Integer fieldId){
+    public GetFieldInfo getFieldInfo(Integer cinemaId, Integer fieldId, HttpServletRequest request){
+//        String token = request.getHeader("Authorization");
+//        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+//        从redis缓存中取得用户的uuid
+//        Integer uuid = userCacheVO.getUuid();
         GetFieldInfo<Object> fieldInfo = new GetFieldInfo<>();
-        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId);
+        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,1);
         fieldInfo.setStatus(0);
         fieldInfo.setImgPre("http://img.meetingshop.cn/");
         fieldInfo.setData(fieldMessage);

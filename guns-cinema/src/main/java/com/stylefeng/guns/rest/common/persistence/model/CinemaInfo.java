@@ -10,7 +10,7 @@ public class CinemaInfo implements Serializable {
     private Integer cinemaId;
     private String cinemaName;
     private String cinemaPhone;
-    private String imgAddress;
+    private String imgUrl;
 
 
 }

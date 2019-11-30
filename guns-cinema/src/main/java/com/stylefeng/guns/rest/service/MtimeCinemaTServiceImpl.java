@@ -43,11 +43,11 @@ public class MtimeCinemaTServiceImpl implements IMtimeCinemaTService {
     public List getAddressPrice(Integer brandId) {
         EntityWrapper<MtimeCinemaT> entityWrapper = new EntityWrapper<>();
         if(brandId == 99) {
-            entityWrapper.isNotNull("brand_id");
+            entityWrapper.isNotNull("area_id");
             List<MtimeCinemaT> selectList = cinemaTMapper.selectList(entityWrapper);
             return selectList;
         }
-        entityWrapper.eq("brand_id", brandId);
+        entityWrapper.eq("area_id", brandId);
         List<MtimeCinemaT> selectList = cinemaTMapper.selectList(entityWrapper);
         return selectList;
     }
