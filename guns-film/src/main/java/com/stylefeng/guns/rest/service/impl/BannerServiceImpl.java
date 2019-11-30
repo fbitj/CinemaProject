@@ -35,9 +35,10 @@ public class BannerServiceImpl implements BannerService {
         if (!CollectionUtils.isEmpty(banners)) {
             for (MtimeBannerT banner : banners) {
                 BannerVO bannerVO = new BannerVO();
-                String bannerAddress = banner.getBannerAddress();
+                /*String bannerAddress = banner.getBannerAddress();
                 String[] split = bannerAddress.split("/");
-                bannerVO.setBannerAddress(split[1]);
+                bannerVO.setBannerAddress(split[1]);*/
+                bannerVO.setBannerAddress(banner.getBannerAddress());
                 bannerVO.setBannerUrl(banner.getBannerUrl());
                 bannerVO.setBannerId(banner.getUuid().toString());
                 bannerVOS.add(bannerVO);
