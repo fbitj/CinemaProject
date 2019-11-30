@@ -55,7 +55,7 @@ public class AuthController {
         final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
         // 在Redis中保存token和用户数据，key为token，用户数据为value
         redisTemplate.opsForValue().set(token, userCacheVO);
-        redisTemplate.expire(token, 60* 5, TimeUnit.SECONDS);
+        redisTemplate.expire(token, 60*5, TimeUnit.SECONDS);
         // 返回正确的应答报文
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put("randomKey", randomKey);
