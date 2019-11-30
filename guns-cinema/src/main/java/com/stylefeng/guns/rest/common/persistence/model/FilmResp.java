@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FilmResp implements Serializable {
+public class FilmResp{
     private String actors;
     private String filmCats;
     private Integer filmId;
@@ -14,5 +14,5 @@ public class FilmResp implements Serializable {
     private String filmName;
     private String filmType;
     private String imgAddress;
-    private List<FilmField> filmFilds;
+    private List<FilmField> filmFields;
 }

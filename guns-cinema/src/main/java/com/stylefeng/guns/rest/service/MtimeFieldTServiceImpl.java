@@ -93,7 +93,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
      * @return
      */
     @Override
-    public Map<String, Object> selectFild(Integer cinemaId) {
+    public Map<String, Object> selectField(Integer cinemaId) {
         //查影院信息
         MtimeCinemaT cinemaT = cinemaTMapper.selectById(cinemaId);
         CinemaInfo cinemaInfo = packageCinema(cinemaT);
@@ -120,7 +120,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
         cinemaInfo.setCinemaName(cinemaT.getCinemaName());
         cinemaInfo.setCinemaAdress(cinemaT.getCinemaAddress());
         cinemaInfo.setCinemaPhone(cinemaT.getCinemaPhone());
-        cinemaInfo.setImgAddress(cinemaT.getImgAddress());
+        cinemaInfo.setImgUrl(cinemaT.getImgAddress());
         return cinemaInfo;
     }
 
@@ -180,7 +180,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
                 //封装LIst<FilmField>
                 //根据film_id封装对应电影的场次
                 List<FilmField> filmFields = packageFilmField(fieldTS, filmInfoT.getFilmLanguage(), filmInfoT.getFilmId());
-                filmResp.setFilmFilds(filmFields);
+                filmResp.setFilmFields(filmFields);
                 filmResps.add(filmResp);
                 //把本次封装的电影id赋给叛别变量
                 filmId = filmInfoT.getFilmId();

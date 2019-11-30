@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class HallTypeResp implements Serializable {
-    private Integer HalltypeId;
-    private String HalltypeName;
+    private Integer halltypeId;
+    private String halltypeName;
     private boolean active;
 }
