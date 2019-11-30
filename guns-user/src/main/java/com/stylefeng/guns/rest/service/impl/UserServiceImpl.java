@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean isUsernameExist(String username) {
-        EntityWrapper wrapper = new EntityWrapper();
+        EntityWrapper<MtimeUserT> wrapper = new EntityWrapper<>();
         wrapper.eq("user_name", username);
         Integer count = mtimeUserTMapper.selectCount(wrapper);
         if (count==0){
