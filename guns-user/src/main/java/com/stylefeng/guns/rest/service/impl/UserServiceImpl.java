@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.service.impl;
+package com.stylefeng.guns.rest.service.Impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -14,14 +14,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+/**
+ * @author zhu rui
+ * @version 1.0
+ * @date 2019/11/28 22:18
+ */
 @Component
 @Service(interfaceClass = UserService.class)
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private MtimeUserTMapper mtimeUserTMapper;
+    MtimeUserTMapper mtimeUserTMapper;
+
+    //private MtimeUserTMapper mtimeUserTMapper;
 
     @Override
     public boolean isUsernameExist(String username) {
@@ -75,6 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUserInfo(UserInfoVo userInfoVo) {
+
         MtimeUserT mtimeUserT = new MtimeUserT();
         mtimeUserT.setUuid(userInfoVo.getUuid());
         mtimeUserT.setUserName(userInfoVo.getUsername());
