@@ -1,8 +1,8 @@
-package com.stylefeng.guns.rest.service.impl;
+package com.stylefeng.guns.rest.service;
 
+import com.baomidou.mybatisplus.service.IService;
 import com.stylefeng.guns.rest.common.persistence.model.MtimeAreaDictT;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeAreaDictTMapper;
-import com.stylefeng.guns.rest.service.IMtimeAreaDictTService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2019-11-28
  */
 @Service
-public class MtimeAreaDictTServiceImpl extends ServiceImpl<MtimeAreaDictTMapper, MtimeAreaDictT> implements IMtimeAreaDictTService {
+public class MtimeAreaDictTServiceImpl extends ServiceImpl<MtimeAreaDictTMapper, MtimeAreaDictT> implements IService<MtimeAreaDictT> {
 
 }
