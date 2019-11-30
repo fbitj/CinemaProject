@@ -120,13 +120,14 @@ public class JwtTokenUtil {
      */
     private String doGenerateToken(Map<String, Object> claims, String subject) {
         final Date createdDate = new Date();
+        //token的过期时间
         final Date expirationDate = new Date(createdDate.getTime() + jwtProperties.getExpiration() * 1000);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(createdDate)
-                .setExpiration(expirationDate)
+                .setSubject(subject)    //username
+                .setIssuedAt(createdDate)//token 生成时间
+                .setExpiration(expirationDate)//token的过期时间
                 .signWith(SignatureAlgorithm.HS512, jwtProperties.getSecret())
                 .compact();
     }

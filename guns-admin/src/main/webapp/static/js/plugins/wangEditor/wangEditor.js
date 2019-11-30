@@ -3888,7 +3888,7 @@
                 // 触发 change 的有三个场景：
                 // 1. $textContainerElem.on('click keyup')
                 // 2. $toolbarElem.on('click')
-                // 3. editor.cmd.do()
+                // 3. editor.cmd.bo()
                 this.change = function () {
                     // 判断是否有变化
                     var currentHtml = this.txt.html();

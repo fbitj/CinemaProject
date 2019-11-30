@@ -1,9 +1,13 @@
-package com.stylefeng.guns.rest.modular.film;
+package com.stylefeng.guns.rest.modular.film.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.guns.dto.FilmsDTO;
 import com.guns.service.film.*;
-import com.guns.vo.*;
+import com.guns.vo.BaseRespVO;
+import com.guns.vo.FilmItemVO;
+import com.guns.vo.FilmListVO;
 import com.guns.vo.film.*;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,22 +18,35 @@ import java.util.Map;
 @RestController
 @RequestMapping("film")
 public class FilmController {
-
-    @Reference(interfaceClass = BannerService.class)
+    @Reference(interfaceClass = BannerService.class, check = false)
     BannerService bannerService;
 
-    @Reference(interfaceClass = FilmService.class)
-    FilmService filmService;
-
-    @Reference(interfaceClass = CatService.class)
+    @Reference(interfaceClass = CatService.class, check = false)
     CatService catService;
 
-    @Reference(interfaceClass = SourceService.class)
+    @Reference(interfaceClass = SourceService.class, check = false)
     SourceService sourceService;
 
-    @Reference(interfaceClass = YearService.class)
+    @Reference(interfaceClass = YearService.class, check = false)
     YearService yearService;
 
+    @Reference(interfaceClass = FilmService.class, check = false)
+    private FilmService filmService;
+
+    @RequestMapping("getFilms")
+    public FilmListVO getFilmsByConditions(FilmsDTO filmsDTo){
+        return filmService.getFilmsByConditions(filmsDTo);
+    }
+
+    @RequestMapping("films/{filmId}")
+    public FilmItemVO getFilmDetail(@PathVariable("filmId") Integer filmId) {
+        return filmService.getFilmDetail(filmId);
+    }
+
+    /**
+     * 首页显示
+     * @return
+     */
     @RequestMapping("getIndex")
     public BaseRespVO filmIndex() {
         List<BannerVO> bannerVOList = bannerService.queryBannersIsValid();
@@ -44,22 +61,6 @@ public class FilmController {
 
         HashMap data = new HashMap();
         data.put("banners",bannerVOList);
-
-        if (hotFilms.size() > 8) {
-            hotFilms = hotFilms.subList(0, 8);
-        }
-        if (soonFilms.size() > 8) {
-            soonFilms = soonFilms.subList(0, 8);
-        }
-        if (boxFilms.size() > 10) {
-            boxFilms = boxFilms.subList(0, 10);
-        }
-        if (expectFilms.size() > 10) {
-            expectFilms = expectFilms.subList(0, 10);
-        }
-        if (highScoreFilms.size() > 10) {
-            highScoreFilms = highScoreFilms.subList(0, 10);
-        }
         data.put("hotFilms", new FilmResultVO(hotFilms.size(), hotFilms));
         data.put("soonFilms", new FilmResultVO(soonFilms.size(), soonFilms));
         data.put("boxRanking", boxFilms);
@@ -67,11 +68,19 @@ public class FilmController {
         data.put("top100", highScoreFilms);
 
         baseRespVO.setData(data);
-        baseRespVO.setImgPre(bannerVOList.get(0).getBannerUrl());
+        //baseRespVO.setImgPre(bannerVOList.get(0).getBannerUrl());
+        baseRespVO.setImgPre("http://img.meetingshop.cn/");
         baseRespVO.setStatus(0);
         return baseRespVO;
     }
 
+    /**
+     * 显示类型、区域和年代信息
+     * @param catId
+     * @param sourceId
+     * @param yearId
+     * @return
+     */
     @RequestMapping("getConditionList")
     public BaseRespVO getConditionList(Integer catId, Integer sourceId, Integer yearId) {
         List<CatInfoVO> catList = catService.selectAllCat(catId);

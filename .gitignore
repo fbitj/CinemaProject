@@ -7,6 +7,7 @@ logs/
 
 # Log file
 *.log
+*.log.*.gz
 
 # BlueJ files
 *.ctxt
@@ -31,3 +32,6 @@ hs_err_pid*
 .classpath
 .project
 .settings/
+
+#liaohao#
+*.yml

@@ -15,6 +15,8 @@ import java.io.Serializable;
 @Data
 public class BaseRespVO<T> implements Serializable {
 
+    private static final long serialVersionUID = 3905287500805502052L;
+    
     private int status;
 
     private T data;
