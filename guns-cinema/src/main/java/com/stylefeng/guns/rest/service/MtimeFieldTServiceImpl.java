@@ -196,8 +196,8 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
                 filmVO.setImgAddress(filmInfoT.getImgAddress());
                 //封装LIst<FilmFieldVO>
                 //根据film_id封装对应电影的场次
-                List<FilmFieldVO> filmFieldVOS = packageFilmField(fieldTS, filmInfoT.getFilmLanguage(), filmInfoT.getFilmId());
-                filmVO.setFilmFieldVOS(filmFieldVOS);
+                List<FilmFieldVO> filmFields = packageFilmField(fieldTS, filmInfoT.getFilmLanguage(), filmInfoT.getFilmId());
+                filmVO.setFilmFields(filmFields);
                 filmVOS.add(filmVO);
                 //把本次封装的电影id赋给叛别变量
                 filmId = filmInfoT.getFilmId();

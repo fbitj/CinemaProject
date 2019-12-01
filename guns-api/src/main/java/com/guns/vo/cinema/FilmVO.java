@@ -2,10 +2,11 @@ package com.guns.vo.cinema;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FilmVO {
+public class FilmVO implements Serializable {
     private String actors;
     private String filmCats;
     private Integer filmId;
@@ -13,5 +14,5 @@ public class FilmVO {
     private String filmName;
     private String filmType;
     private String imgAddress;
-    private List<FilmFieldVO> filmFieldVOS;
+    private List<FilmFieldVO> filmFields;
 }
