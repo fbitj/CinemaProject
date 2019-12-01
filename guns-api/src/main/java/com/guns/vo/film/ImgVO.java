@@ -1,4 +1,4 @@
-package com.guns.vo;
+package com.guns.vo.film;
 
 import lombok.Data;
 
@@ -18,6 +18,4 @@ public class ImgVO implements Serializable {
     private String img03;
 
     private String img04;
-
-    private String img05;
 }

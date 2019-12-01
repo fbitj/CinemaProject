@@ -5,10 +5,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.dto.FilmsDTO;
 import com.guns.service.film.FilmService;
 import com.guns.vo.*;
-import com.guns.vo.film.FilmInfoVO;
+import com.guns.vo.film.*;
 import com.stylefeng.guns.rest.common.exception.FilmException;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
+import com.stylefeng.guns.rest.utils.FilmItemVOBuilder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -16,6 +17,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -39,44 +41,61 @@ public class MtimeFilmServiceImpl implements FilmService {
 
     @Override
     public FilmListVO getFilmsByConditions(FilmsDTO filmsDTO) {
+        /*List<FilmInfoVO> filmInfoVOS = mtimeFilmTMapper.filmInfoVOB(
+                filmsDTO.getShowType(),
+                filmsDTO.getSortId(),
+                filmsDTO.getCatId(),
+                filmsDTO.getSourceId(),
+                filmsDTO.getYearId());*/
+
         EntityWrapper<MtimeFilmT> mtimeFilmTEntityWrapper = new EntityWrapper<>();
-        mtimeFilmTEntityWrapper
-                .eq("film_status", filmsDTO.getShowType())
-                .like("film_cats", "#" + filmsDTO.getCatId() + "#")
-                .eq("film_area", filmsDTO.getSortId())
-                .eq("film_date", filmsDTO.getYearId());
+        mtimeFilmTEntityWrapper.eq("film_status", filmsDTO.getShowType());
+        if (filmsDTO.getCatId() != 99){
+            mtimeFilmTEntityWrapper.like("film_cats", "#" + filmsDTO.getCatId() + "#");
+        }
+        if (filmsDTO.getSourceId() != 99){
+            mtimeFilmTEntityWrapper.eq("film_area", filmsDTO.getSourceId());
+        }
+        if (filmsDTO.getYearId() != 99){
+            mtimeFilmTEntityWrapper.eq("film_date", filmsDTO.getYearId());
+        }
+        //排序方式，1-按热门搜索，2-按时间搜索，3-按评价搜索
         if (filmsDTO.getSortId() == 1) {
-            //排序方式，1-按热门搜索，2-按时间搜索，3-按评价搜索
             mtimeFilmTEntityWrapper.orderBy("film_preSaleNum", true);
         } else if (filmsDTO.getSortId() == 2) {
             mtimeFilmTEntityWrapper.orderBy("film_time", true);
         } else {
             mtimeFilmTEntityWrapper.orderBy("film_score", true);
         }
+
         List<MtimeFilmT> films = mtimeFilmTMapper.selectList(mtimeFilmTEntityWrapper);
         // 数据封装
         FilmListVO target = new FilmListVO<>();
         //===========待修改===========
         target.setNowPage(filmsDTO.getNowPage());
+        target.setImgPre("http://img.meetingshop.cn/");
         //===========待修改===========
         target.setTotalPage(3);
         target.setStatus(0);
         List<FilmInfoVO> filmInfoVOS = new ArrayList<>();
         for (MtimeFilmT film : films) {
+            //通过filmID查询imgAddress
             FilmInfoVO filmInfoVO = new FilmInfoVO();
+
+            EntityWrapper<MtimeHallFilmInfoT> wrapper = new EntityWrapper<>();
+            wrapper.eq("film_id", film.getUuid());
+            List<MtimeHallFilmInfoT> mtimeHallFilmInfoTS = mtimeHallFilmInfoTMapper.selectList(wrapper);
+            if (mtimeHallFilmInfoTS.size() > 0){
+                filmInfoVO.setImgAddress(mtimeHallFilmInfoTS.get(0).getImgAddress());
+            }
             filmInfoVO.setFilmId(String.valueOf(film.getUuid()));
-            filmInfoVO.setFilmType(film.getFilmType());
-            EntityWrapper<MtimeFilmInfoT> mtimeFilmInfoTWrapper = new EntityWrapper<>();
-            mtimeFilmInfoTWrapper.eq("film_id", film.getUuid());
-            List<MtimeFilmInfoT> mtimeFilmInfoTS = mtimeFilmInfoTMapper.selectList(mtimeFilmInfoTWrapper);
-            filmInfoVO.setImgAddress(mtimeFilmInfoTS.get(0).getFilmImgs());
             filmInfoVO.setFilmName(film.getFilmName());
-            filmInfoVO.setScore(film.getFilmScore());
+            filmInfoVO.setFilmType(film.getFilmType());
+            filmInfoVO.setFilmScore(film.getFilmScore());
 
             filmInfoVOS.add(filmInfoVO);
         }
         target.setData(filmInfoVOS);
-        target.setImgPre("http://img.meetingshop.cn/");
         return target;
     }
 
@@ -115,38 +134,15 @@ public class MtimeFilmServiceImpl implements FilmService {
         } catch (Exception e) {
             throw new FilmException();
         }
-        // 封装影片信息
-        FilmItemInfoVO filmItemInfoVO = new FilmItemInfoVO();
-        filmItemInfoVO.setFilmName(film.getFilmName());
-        filmItemInfoVO.setFilmEnName(mtimeFilmInfoT.getFilmEnName());
-        filmItemInfoVO.setImgAddress(hallFilmInfoT.getImgAddress());
-        filmItemInfoVO.setScore(mtimeFilmInfoT.getFilmScore());
-        filmItemInfoVO.setScoreNum(mtimeFilmInfoT.getFilmScoreNum());
-        filmItemInfoVO.setTotalBox(film.getFilmBoxOffice());
-        filmItemInfoVO.setInfo01(hallFilmInfoT.getFilmCats());
-        filmItemInfoVO.setInfo02(showName + " / " + mtimeFilmInfoT.getFilmLength() + "分钟");
-
-        filmItemInfoVO.setInfo03(date + " / " + showName + "上映");
-        Info04 info04 = new Info04();
-        info04.setBiography(mtimeFilmInfoT.getBiography());
-        info04.setDirector(director);
-        info04.setActors(actors);
-        filmItemInfoVO.setInfo04(info04);
-
-        // 封装返回VO
-        FilmItemVO filmItemVO = new FilmItemVO();
-        filmItemVO.setStatus(0);
-        filmItemVO.setImgPre("http://img.meetingshop.cn/");// ==========暂时固定返回值
-        filmItemVO.setData(filmItemInfoVO);
-        ImgVO imgVO = new ImgVO();
-        String[] split = mtimeFilmInfoT.getFilmImgs().split(",");
-        imgVO.setImg01(split[0]);
-        imgVO.setImg02(split[1]);
-        imgVO.setImg03(split[2]);
-        imgVO.setImg04(split[3]);
-        imgVO.setImg05(split[4]);
-        filmItemVO.setImgVO(imgVO);
-        filmItemVO.setFilmId(film.getUuid());
+        FilmItemVOBuilder filmItemVOBuilder = new FilmItemVOBuilder();
+        FilmItemVO filmItemVO = filmItemVOBuilder.addFilm(film)
+                .addFilmInfo(mtimeFilmInfoT)
+                .addHallFilmInfo(hallFilmInfoT)
+                .addActors(actors)
+                .addDirictor(director)
+                .addFilmSource(showName)
+                .addImgpro("http://img.meetingshop.cn/")// ==========暂时固定返回值
+                .addStatus(0).builder();
         return filmItemVO;
     }
 
@@ -255,7 +251,11 @@ public class MtimeFilmServiceImpl implements FilmService {
     private MtimeHallFilmInfoT selectHallFilmInfoByFilmId(Integer filmId) {
         EntityWrapper<MtimeHallFilmInfoT> wrapper = new EntityWrapper<>();
         wrapper.eq("film_id", filmId);
-        MtimeHallFilmInfoT mtimeHallFilmInfoT = mtimeHallFilmInfoTMapper.selectList(wrapper).get(0);
+        List<MtimeHallFilmInfoT> mtimeHallFilmInfoTS = mtimeHallFilmInfoTMapper.selectList(wrapper);
+        if (mtimeHallFilmInfoTS.size() == 0){
+            return null;
+        }
+        MtimeHallFilmInfoT mtimeHallFilmInfoT = mtimeHallFilmInfoTS.get(0);
         return mtimeHallFilmInfoT;
     }
 

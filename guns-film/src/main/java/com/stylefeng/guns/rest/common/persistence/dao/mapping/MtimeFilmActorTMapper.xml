@@ -9,7 +9,7 @@
         <result column="actor_id" property="actorId"/>
         <result column="role_name" property="roleName"/>
     </resultMap>
-    <select id="selectActorsByFilmId" resultType="com.guns.vo.ActorVO">
+    <select id="selectActorsByFilmId" resultType="com.guns.vo.film.ActorVO">
         SELECT a.actor_name as directorName, a.actor_img as imgAddress ,fa.role_name as roleName  from mtime_actor_t a
         LEFT JOIN  `mtime_film_actor_t` fa on a.uuid = fa.actor_id
         where film_id = #{filmId}

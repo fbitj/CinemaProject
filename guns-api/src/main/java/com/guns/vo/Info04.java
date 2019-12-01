@@ -1,9 +1,10 @@
 package com.guns.vo;
 
+import com.guns.vo.film.ImgVO;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 @Data
 public class Info04 implements Serializable {
@@ -11,7 +12,11 @@ public class Info04 implements Serializable {
 
     String biography;
 
-    DirictorVO director;
+    Integer filmId;
 
-    List<ActorVO> actors;
+    Map<String ,Object> actors;
+
+    ImgVO imgVO;
+
+
 }
