@@ -30,6 +30,10 @@ public class FilmController {
     @Reference(interfaceClass = YearService.class, check = false)
     YearService yearService;
 
+    /**
+     * 首页显示
+     * @return
+     */
     @RequestMapping("getIndex")
     public BaseRespVO filmIndex() {
         List<BannerVO> bannerVOList = bannerService.queryBannersIsValid();
@@ -56,6 +60,13 @@ public class FilmController {
         return baseRespVO;
     }
 
+    /**
+     * 显示类型、区域和年代信息
+     * @param catId
+     * @param sourceId
+     * @param yearId
+     * @return
+     */
     @RequestMapping("getConditionList")
     public BaseRespVO getConditionList(Integer catId, Integer sourceId, Integer yearId) {
         List<CatInfoVO> catList = catService.selectAllCat(catId);
