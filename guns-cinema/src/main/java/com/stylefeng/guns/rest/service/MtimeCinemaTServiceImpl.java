@@ -3,6 +3,9 @@ package com.stylefeng.guns.rest.service;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.service.cinema.IMtimeCinemaTService;
+import com.guns.vo.cinema.AreaVO;
+import com.guns.vo.cinema.BrandVO;
+import com.guns.vo.cinema.HallTypeVO;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeAreaDictTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeBrandDictTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeCinemaTMapper;
@@ -70,11 +73,11 @@ public class MtimeCinemaTServiceImpl implements IMtimeCinemaTService {
     public Map<String, Object> getCinema(Integer brandId, Integer hallType, Integer areaId) {
 
         List<MtimeBrandDictT> brands = brandDictTMapper.selectList(null);
-        List<BrandResp> brandList = packageBrand(brands, brandId);
+        List<BrandVO> brandList = packageBrand(brands, brandId);
         List<MtimeAreaDictT> areas = areaDictTMapper.selectList(null);
-        List<AreaResp> areaList = packageArea(areas, areaId);
+        List<AreaVO> areaList = packageArea(areas, areaId);
         List<MtimeHallDictT> halltypes = hallDictTMapper.selectList(null);
-        List<HallTypeResp> halltypeList = packageHallType(halltypes, hallType);
+        List<HallTypeVO> halltypeList = packageHallType(halltypes, hallType);
         Map<String ,Object> map = new HashMap<>();
         map.put("brandList", brandList);
         map.put("areaList", areaList);
@@ -88,22 +91,22 @@ public class MtimeCinemaTServiceImpl implements IMtimeCinemaTService {
      * @param brandId
      * @return
      */
-    private List<BrandResp> packageBrand(List<MtimeBrandDictT> brandList, Integer brandId) {
-        ArrayList<BrandResp> brandResps = new ArrayList<>();
+    private List<BrandVO> packageBrand(List<MtimeBrandDictT> brandList, Integer brandId) {
+        ArrayList<BrandVO> brandVOS = new ArrayList<>();
         for (MtimeBrandDictT brand : brandList) {
-            BrandResp brandResp = new BrandResp();
+            BrandVO brandVO = new BrandVO();
             if(brand.getUuid() != brandId) {
-                brandResp.setBrandId(brand.getUuid());
-                brandResp.setBrandName(brand.getShowName());
-                brandResp.setActive(false);
+                brandVO.setBrandId(brand.getUuid());
+                brandVO.setBrandName(brand.getShowName());
+                brandVO.setActive(false);
             } else {
-                brandResp.setBrandId(brand.getUuid());
-                brandResp.setBrandName(brand.getShowName());
-                brandResp.setActive(true);
+                brandVO.setBrandId(brand.getUuid());
+                brandVO.setBrandName(brand.getShowName());
+                brandVO.setActive(true);
             }
-            brandResps.add(brandResp);
+            brandVOS.add(brandVO);
         }
-        return brandResps;
+        return brandVOS;
     }
 
     /**
@@ -112,22 +115,22 @@ public class MtimeCinemaTServiceImpl implements IMtimeCinemaTService {
      * @param hallType
      * @return
      */
-    private List<HallTypeResp> packageHallType(List<MtimeHallDictT> halltypeList, Integer hallType) {
-        ArrayList<HallTypeResp> hallTypeResps = new ArrayList<>();
+    private List<HallTypeVO> packageHallType(List<MtimeHallDictT> halltypeList, Integer hallType) {
+        ArrayList<HallTypeVO> hallTypeVOS = new ArrayList<>();
         for (MtimeHallDictT hall : halltypeList) {
-            HallTypeResp hallTypeResp = new HallTypeResp();
+            HallTypeVO hallTypeVO = new HallTypeVO();
             if(hall.getUuid() != hallType) {
-                hallTypeResp.setHalltypeId(hall.getUuid());
-                hallTypeResp.setHalltypeName(hall.getShowName());
-                hallTypeResp.setActive(false);
+                hallTypeVO.setHalltypeId(hall.getUuid());
+                hallTypeVO.setHalltypeName(hall.getShowName());
+                hallTypeVO.setActive(false);
             } else {
-                hallTypeResp.setHalltypeId(hall.getUuid());
-                hallTypeResp.setHalltypeName(hall.getShowName());
-                hallTypeResp.setActive(true);
+                hallTypeVO.setHalltypeId(hall.getUuid());
+                hallTypeVO.setHalltypeName(hall.getShowName());
+                hallTypeVO.setActive(true);
             }
-            hallTypeResps.add(hallTypeResp);
+            hallTypeVOS.add(hallTypeVO);
         }
-        return hallTypeResps;
+        return hallTypeVOS;
     }
 
     /**
@@ -136,21 +139,21 @@ public class MtimeCinemaTServiceImpl implements IMtimeCinemaTService {
      * @param areaId
      * @return
      */
-    private List<AreaResp> packageArea(List<MtimeAreaDictT> areaList, Integer areaId) {
-        ArrayList<AreaResp> areaResps = new ArrayList<>();
+    private List<AreaVO> packageArea(List<MtimeAreaDictT> areaList, Integer areaId) {
+        ArrayList<AreaVO> areaVOS = new ArrayList<>();
         for (MtimeAreaDictT area : areaList) {
-            AreaResp areaResp = new AreaResp();
+            AreaVO areaVO = new AreaVO();
             if(area.getUuid() != areaId) {
-                areaResp.setAreaId(area.getUuid());
-                areaResp.setAreaName(area.getShowName());
-                areaResp.setActive(false);
+                areaVO.setAreaId(area.getUuid());
+                areaVO.setAreaName(area.getShowName());
+                areaVO.setActive(false);
             } else {
-                areaResp.setAreaId(area.getUuid());
-                areaResp.setAreaName(area.getShowName());
-                areaResp.setActive(true);
+                areaVO.setAreaId(area.getUuid());
+                areaVO.setAreaName(area.getShowName());
+                areaVO.setActive(true);
             }
-            areaResps.add(areaResp);
+            areaVOS.add(areaVO);
         }
-        return areaResps;
+        return areaVOS;
     }
 }

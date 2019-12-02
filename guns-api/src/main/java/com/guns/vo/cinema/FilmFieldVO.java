@@ -1,11 +1,11 @@
-package com.stylefeng.guns.rest.common.persistence.model;
+package com.guns.vo.cinema;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
-public class FilmField implements Serializable {
+public class FilmFieldVO implements Serializable {
     private Integer fieldId;
     private String hallName;
     private String beginTime;

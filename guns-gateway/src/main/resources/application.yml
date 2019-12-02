@@ -43,3 +43,6 @@ logging:
   level.com.stylefeng: debug
   path: logs/
   file: guns-gateway.log
+
+pagehelper:
+  helper-dialect: mysql

@@ -4,13 +4,15 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.service.cinema.*;
+import com.guns.vo.cinema.CinemaInfoVO;
+import com.guns.vo.cinema.FilmFieldVO;
+import com.guns.vo.cinema.FilmVO;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeFieldTMapper;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.service.cinema.IMtimeFieldTService;
 import com.guns.service.cinema.IMtimeHallDictTService;
 import com.guns.service.cinema.IMtimeHallFilmInfoTService;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeCinemaTMapper;
-import com.stylefeng.guns.rest.common.persistence.dao.MtimeFieldTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeHallFilmInfoTMapper;
 import com.stylefeng.guns.rest.common.persistence.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,18 +110,18 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
      * @return
      */
     @Override
-    public Map<String, Object> selectFild(Integer cinemaId) {
+    public Map<String, Object> selectField(Integer cinemaId) {
         //查影院信息
         MtimeCinemaT cinemaT = cinemaTMapper.selectById(cinemaId);
-        CinemaInfo cinemaInfo = packageCinema(cinemaT);
+        CinemaInfoVO cinemaInfoVO = packageCinema(cinemaT);
         //查场次信息
         EntityWrapper<MtimeFieldT> fieldTWrapper = new EntityWrapper<>();
         fieldTWrapper.eq("cinema_id", cinemaId);
         List<MtimeFieldT> fieldTS = fieldTMapper.selectList(fieldTWrapper);
         //查询电影信息
-        List<FilmResp> filmList = packageFilm(fieldTS);
+        List<FilmVO> filmList = packageFilm(fieldTS);
         Map<String, Object> map = new HashMap<>();
-        map.put("cinemaInfo", cinemaInfo);
+        map.put("cinemaInfo", cinemaInfoVO);
         map.put("filmList", filmList);
         return map;
     }
@@ -129,14 +131,14 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
      * @param cinemaT
      * @return
      */
-    private  CinemaInfo packageCinema( MtimeCinemaT cinemaT) {
-        CinemaInfo cinemaInfo = new CinemaInfo();
-        cinemaInfo.setCinemaId(cinemaT.getUuid());
-        cinemaInfo.setCinemaName(cinemaT.getCinemaName());
-        cinemaInfo.setCinemaAdress(cinemaT.getCinemaAddress());
-        cinemaInfo.setCinemaPhone(cinemaT.getCinemaPhone());
-        cinemaInfo.setImgUrl(cinemaT.getImgAddress());
-        return cinemaInfo;
+    private CinemaInfoVO packageCinema(MtimeCinemaT cinemaT) {
+        CinemaInfoVO cinemaInfoVO = new CinemaInfoVO();
+        cinemaInfoVO.setCinemaId(cinemaT.getUuid());
+        cinemaInfoVO.setCinemaName(cinemaT.getCinemaName());
+        cinemaInfoVO.setCinemaAdress(cinemaT.getCinemaAddress());
+        cinemaInfoVO.setCinemaPhone(cinemaT.getCinemaPhone());
+        cinemaInfoVO.setImgUrl(cinemaT.getImgAddress());
+        return cinemaInfoVO;
     }
 
     /**
@@ -144,24 +146,24 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
      * @param fieldTS
      * @return
      */
-    private List<FilmField> packageFilmField(List<MtimeFieldT> fieldTS, String language, Integer filmId) {
-        ArrayList<FilmField> filmFields = new ArrayList<>();
+    private List<FilmFieldVO> packageFilmField(List<MtimeFieldT> fieldTS, String language, Integer filmId) {
+        ArrayList<FilmFieldVO> filmFieldVOS = new ArrayList<>();
         for (MtimeFieldT fieldT : fieldTS) {
             //根据film_id封装对应电影的场次
             if(filmId != fieldT.getFilmId()) {
                 continue;
             }
-            FilmField filmField = new FilmField();
-            filmField.setFieldId(fieldT.getUuid());
-            filmField.setHallName(fieldT.getHallName());
-            filmField.setBeginTime(fieldT.getBeginTime());
-            filmField.setEndTime(fieldT.getEndTime());
+            FilmFieldVO filmFieldVO = new FilmFieldVO();
+            filmFieldVO.setFieldId(fieldT.getUuid());
+            filmFieldVO.setHallName(fieldT.getHallName());
+            filmFieldVO.setBeginTime(fieldT.getBeginTime());
+            filmFieldVO.setEndTime(fieldT.getEndTime());
             //film语言在电影信息表里
-            filmField.setLanguage(language);
-            filmField.setPrice(String.valueOf(fieldT.getPrice()));
-            filmFields.add(filmField);
+            filmFieldVO.setLanguage(language);
+            filmFieldVO.setPrice(String.valueOf(fieldT.getPrice()));
+            filmFieldVOS.add(filmFieldVO);
         }
-        return filmFields;
+        return filmFieldVOS;
     }
 
     /**
@@ -170,8 +172,8 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
      * @param fieldTS
      * @return
      */
-    private List<FilmResp> packageFilm(List<MtimeFieldT> fieldTS) {
-        ArrayList<FilmResp> filmResps = new ArrayList<>();
+    private List<FilmVO> packageFilm(List<MtimeFieldT> fieldTS) {
+        ArrayList<FilmVO> filmVOS = new ArrayList<>();
         //判断电影是否封装过
         Integer filmId = 0;
         for (MtimeFieldT fieldT : fieldTS) {
@@ -183,24 +185,24 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
                     //遇到封装过的电影，跳出本次循环
                     continue;
                 }
-                FilmResp filmResp = new FilmResp();
-                filmResp.setFilmId(filmInfoT.getFilmId());
-                filmResp.setActors(filmInfoT.getActors());
-                filmResp.setFilmCats(filmInfoT.getFilmCats());
-                filmResp.setFilmLength(filmInfoT.getFilmLength());
-                filmResp.setFilmName(filmInfoT.getFilmName());
+                FilmVO filmVO = new FilmVO();
+                filmVO.setFilmId(filmInfoT.getFilmId());
+                filmVO.setActors(filmInfoT.getActors());
+                filmVO.setFilmCats(filmInfoT.getFilmCats());
+                filmVO.setFilmLength(filmInfoT.getFilmLength());
+                filmVO.setFilmName(filmInfoT.getFilmName());
                 //filmType就是语言language
-                filmResp.setFilmType(filmInfoT.getFilmLanguage());
-                filmResp.setImgAddress(filmInfoT.getImgAddress());
-                //封装LIst<FilmField>
+                filmVO.setFilmType(filmInfoT.getFilmLanguage());
+                filmVO.setImgAddress(filmInfoT.getImgAddress());
+                //封装LIst<FilmFieldVO>
                 //根据film_id封装对应电影的场次
-                List<FilmField> filmFields = packageFilmField(fieldTS, filmInfoT.getFilmLanguage(), filmInfoT.getFilmId());
-                filmResp.setFilmFields(filmFields);
-                filmResps.add(filmResp);
+                List<FilmFieldVO> filmFields = packageFilmField(fieldTS, filmInfoT.getFilmLanguage(), filmInfoT.getFilmId());
+                filmVO.setFilmFields(filmFields);
+                filmVOS.add(filmVO);
                 //把本次封装的电影id赋给叛别变量
                 filmId = filmInfoT.getFilmId();
             }
         }
-        return filmResps;
+        return filmVOS;
     }
 }

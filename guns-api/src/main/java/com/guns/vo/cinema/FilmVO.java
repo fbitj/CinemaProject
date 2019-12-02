@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.common.persistence.model;
+package com.guns.vo.cinema;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class FilmResp implements Serializable {
+public class FilmVO implements Serializable {
     private String actors;
     private String filmCats;
     private Integer filmId;
@@ -14,5 +14,5 @@ public class FilmResp implements Serializable {
     private String filmName;
     private String filmType;
     private String imgAddress;
-    private List<FilmField> filmFields;
+    private List<FilmFieldVO> filmFields;
 }

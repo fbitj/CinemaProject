@@ -149,7 +149,7 @@ public class CinemaController {
 
     @RequestMapping("getFields")
     public BaseRespVO getFields(Integer cinemaId) {
-        Map<String, Object> field = fieldTService.selectFild(cinemaId);
+        Map<String, Object> field = fieldTService.selectField(cinemaId);
         if(field != null) {
             return BaseRespVO.ok(field);
         }
