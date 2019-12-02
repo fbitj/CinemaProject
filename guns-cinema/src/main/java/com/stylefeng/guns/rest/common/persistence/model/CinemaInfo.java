@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class CinemaInfo  {
+public class CinemaInfo implements Serializable {
     private String cinemaAdress;
     private Integer cinemaId;
     private String cinemaName;

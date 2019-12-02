@@ -124,6 +124,14 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
         return map;
     }
 
+    @Override
+    public Object getFields(Integer fieldId) {
+        EntityWrapper<MtimeFieldT> wrapper = new EntityWrapper<>();
+        wrapper.eq("UUID", fieldId);
+        List<MtimeFieldT> mtimeFieldTS = fieldTMapper.selectList(wrapper);
+        return mtimeFieldTS.get(0);
+    }
+
     /**
      * 封装cinema信息
      * @param cinemaT

@@ -22,4 +22,6 @@ public interface IMtimeFieldTService extends Serializable {
     //获取播放场次接口
     Map<String, Object> selectField(Integer cinemaId);
 
+    Object getFields(Integer fieldId);
+
 }

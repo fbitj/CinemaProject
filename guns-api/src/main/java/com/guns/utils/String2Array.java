@@ -26,4 +26,15 @@ public class String2Array {
         return "";
     }
 
+    public static ArrayList<Integer> string2Arrays(String str){
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        String[] split = str.split(",");
+        for (String s : split) {
+            if(s != null && !"".equals(s)){
+                int i = Integer.parseInt(s.trim());
+                arrayList.add(i);
+            }
+        }
+        return arrayList;
+    }
 }

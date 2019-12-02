@@ -15,4 +15,6 @@ import java.io.Serializable;
 public interface IMtimeHallDictTService extends Serializable {
 
     Object gethall(Integer id);
+
+
 }

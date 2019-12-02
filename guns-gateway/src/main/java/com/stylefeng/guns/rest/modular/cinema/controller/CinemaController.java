@@ -122,9 +122,9 @@ public class CinemaController {
      */
     @RequestMapping("getFieldInfo")
     public GetFieldInfo getFieldInfo(Integer cinemaId, Integer fieldId, HttpServletRequest request){
+//        从redis缓存中取得用户的uuid
 //        String token = request.getHeader("Authorization");
 //        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
-//        从redis缓存中取得用户的uuid
 //        Integer uuid = userCacheVO.getUuid();
         GetFieldInfo<Object> fieldInfo = new GetFieldInfo<>();
         Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,1);

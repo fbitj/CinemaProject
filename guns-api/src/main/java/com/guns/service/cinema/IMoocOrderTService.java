@@ -11,5 +11,13 @@ package com.guns.service.cinema;
  */
 public interface IMoocOrderTService {
 
+    Boolean isTrueSeats(Integer fieldId, String soldSeats);
+
+    Boolean isSoldSeats(Integer fieldId, String soldSeats);
+
     Object getOrders(Integer cinemaId, Integer fieldId, Integer filmId, Integer status);
+
+    Object buyTickets(Integer fieldId, String soldSeats, String seatsName, Integer userId);
+
+    Object getUserOrders(Integer nowPage, Integer pageSize, Integer userId);
 }

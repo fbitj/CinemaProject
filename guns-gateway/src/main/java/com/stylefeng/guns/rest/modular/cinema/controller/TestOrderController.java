@@ -1,8 +1,12 @@
 package com.stylefeng.guns.rest.modular.cinema.controller;
 
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.guns.service.cinema.IMoocOrderTService;
 import com.guns.vo.cinema.OrderVo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Cats-Fish
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestOrderController {
 
 
+    @Reference(interfaceClass = IMoocOrderTService.class, check = false)
+    IMoocOrderTService orderTService;
 
     /**
      * request
@@ -38,11 +44,74 @@ public class TestOrderController {
      * @param seatsName
      */
 //    @RequestMapping("byTickets")
-    public OrderVo buyTicket(Integer fieldId, String soldSeats, String seatsName){
+    public OrderVo buyTicket(Integer fieldId, String soldSeats, String seatsName, HttpServletRequest request){
+        Boolean trueSeats = orderTService.isTrueSeats(fieldId, soldSeats);
+        OrderVo orderVo = new OrderVo();
+        if(trueSeats){
+            Boolean soldSeats1 = orderTService.isSoldSeats(fieldId, soldSeats);
+            if(soldSeats1) {
+//        从redis缓存中取得用户的uuid
+//        String token = request.getHeader("Authorization");
+//        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+//        Integer uuid = userCacheVO.getUuid();
+                Object o = orderTService.buyTickets(fieldId, soldSeats, seatsName, 0);
+                orderVo.setStatus(0);
+                orderVo.setMsg("");
+                orderVo.setData(o);
+                return orderVo;
+            }else {
+                orderVo.setStatus(-2);
+                orderVo.setMsg("该座位已被购买");
+                return orderVo;
+            }
+        }else {
+            orderVo.setStatus(-1);
+            orderVo.setMsg("非法数据");
+            return orderVo;
+        }
+    }
+
+
+    /**r
+     * request      /order/getOrderInfo
+     * response
+     * {
+     * 	"status":0,
+     * 	"msg":"",
+     * 	"data":[
+     *                {
+     * 			"orderId":"18392981493",
+     * 			"filmName":"基于SpringBoot 十分钟搞定后台管理平台",
+     * 			"fieldTime":"9月8号 11:50",
+     * 			"cinemaName":"万达影城(顺义金街店)",
+     * 			"seatsName":"1排3座 1排4座 2排4座",
+     * 			"orderPrice":"120",
+     * 			"orderStatus”:”已关闭”
+     *        },{
+     * 			"orderId":"213581239123",
+     * 			"filmName":"Tomcat+Memcached/Redis集群",
+     * 			"fieldTime":"9月10号 13:50",
+     * 			"cinemaName":"万达影城(顺义金街店)",
+     * 			"seatsName":"1排3座 1排4座 2排4座",
+     * 			"orderPrice":"140",
+     * 			"orderStatus”:”已完成”
+     *        },
+     * 	]
+     * }
+     */
+//    @RequestMapping("getOrderInfo")
+    public OrderVo getOrderinfo(Integer nowPage, Integer pageSize, HttpServletRequest request){
+//        从redis缓存中取得用户的uuid        需开启redis数据库
+//        String token = request.getHeader("Authorization");
+//        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+//        Integer uuid = userCacheVO.getUuid();
+        Object userOrders = orderTService.getUserOrders(nowPage, pageSize, 0);
         OrderVo orderVo = new OrderVo();
         orderVo.setStatus(0);
         orderVo.setMsg("");
-        orderVo.setData(new Object());
+        orderVo.setData(userOrders);
         return orderVo;
     }
+
+
 }
