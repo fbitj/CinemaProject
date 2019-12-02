@@ -4,9 +4,12 @@ package com.stylefeng.guns.rest.modular.cinema.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.service.cinema.IMoocOrderTService;
+import com.guns.vo.UserCacheVO;
 import com.guns.vo.cinema.GetFieldInfo;
 import com.guns.vo.cinema.OrderVo;
 import com.guns.vo.cinema.TicketsVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,12 +23,15 @@ import java.util.HashMap;
  * @date 2019/12/1 20:40
  */
 @RestController
-@RequestMapping("order")
+//@RequestMapping("order")
 public class TestOrderController {
 
 
     @Reference(interfaceClass = IMoocOrderTService.class, check = false)
     IMoocOrderTService orderTService;
+    @Autowired
+    RedisTemplate redisTemplate;
+
 
     /**
      * request
@@ -57,7 +63,11 @@ public class TestOrderController {
 //        String token = request.getHeader("Authorization");
 //        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
 //        Integer uuid = userCacheVO.getUuid();
-                Object o = orderTService.buyTickets(fieldId, soldSeats, seatsName, 1);
+                String token = request.getHeader("Authorization");
+                token = token.substring(7);
+                UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+                Integer uuid = userCacheVO.getUuid();
+                Object o = orderTService.buyTickets(fieldId, soldSeats, seatsName, uuid);
                 orderVo.setStatus(0);
                 orderVo.setMsg("");
                 orderVo.setData(o);
@@ -108,7 +118,11 @@ public class TestOrderController {
 //        String token = request.getHeader("Authorization");
 //        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
 //        Integer uuid = userCacheVO.getUuid();
-        Object userOrders = orderTService.getUserOrders(nowPage, pageSize, 1);
+        String token = request.getHeader("Authorization");
+        token = token.substring(7);
+        UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+        Integer uuid = userCacheVO.getUuid();
+        Object userOrders = orderTService.getUserOrders(nowPage, pageSize, uuid);
         OrderVo orderVo = new OrderVo();
         orderVo.setStatus(0);
         orderVo.setMsg("");

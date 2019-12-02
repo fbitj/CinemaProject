@@ -409,11 +409,16 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
                 // 需要修改为运行机器上的路径
 //                String filePath = String.format("http://img.meetingshop.cn/qr-%s.png", response.getOutTradeNo());
 //                String filePath = String.format("http://cskaoyan.oss-cn-beijing.aliyuncs.com/qr-%s.png", response.getOutTradeNo());
-                String filePath = String.format("H:\\MyMicroservice\\QRcode/qr-%s.png", response.getOutTradeNo());
+                File file1 = new File("C:\\MyMicroservice\\QRcode");
+                if(!file1.exists()){
+                    file1.mkdirs();
+                }
+
+                String filePath = String.format("C:\\MyMicroservice\\QRcode/qr-%s.png", response.getOutTradeNo());
                 log.info("filePath:" + filePath);
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, filePath);
                 String img = "qr-" + response.getOutTradeNo() + ".png";
-                File file = new File("H:\\MyMicroservice\\QRcode\\" + img);
+                File file = new File("C:\\MyMicroservice\\QRcode\\" + img);
                 try {
                     FileInputStream fileInputStream = new FileInputStream(file);
                     if(aliyunComponent.getOssClient() != null) {
