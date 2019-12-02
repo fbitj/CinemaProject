@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * 影片主表 Mapper 接口
  * </p>
  *
- * @author fwj
- * @since 2019-11-27
+ * @author liaohao
+ * @since 2019-11-28
  */
 public interface MtimeFilmTMapper extends BaseMapper<MtimeFilmT> {
 

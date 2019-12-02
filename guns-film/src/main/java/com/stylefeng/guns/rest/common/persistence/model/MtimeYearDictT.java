@@ -11,8 +11,7 @@ import java.io.Serializable;
  * <p>
  * 年代信息表
  * </p>
- *
- * @author fwj
+ * @author liaohao
  * @since 2019-11-28
  */
 @TableName("mtime_year_dict_t")

@@ -1,5 +1,6 @@
 package com.guns.vo;
 
+import com.guns.vo.film.FilmInfoVO;
 import lombok.Data;
 
 import java.io.Serializable;

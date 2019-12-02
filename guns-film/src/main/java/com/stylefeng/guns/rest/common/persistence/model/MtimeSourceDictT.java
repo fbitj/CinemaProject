@@ -11,8 +11,7 @@ import java.io.Serializable;
  * <p>
  * 区域信息表
  * </p>
- *
- * @author fwj
+ * @author liaohao
  * @since 2019-11-28
  */
 @TableName("mtime_source_dict_t")

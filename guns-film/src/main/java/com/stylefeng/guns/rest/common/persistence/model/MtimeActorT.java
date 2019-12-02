@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 演员表
  * </p>
  *
- * @author fwj
+ * @author liaohao
  * @since 2019-11-28
  */
 @TableName("mtime_actor_t")

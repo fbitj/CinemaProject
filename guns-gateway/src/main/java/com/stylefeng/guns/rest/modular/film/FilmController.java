@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.service.film.*;
 import com.guns.vo.*;
 import com.guns.vo.film.*;
+import com.guns.vo.film.BannerVO;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

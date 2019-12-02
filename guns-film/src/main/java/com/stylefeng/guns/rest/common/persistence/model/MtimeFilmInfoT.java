@@ -12,7 +12,7 @@ import java.io.Serializable;
  * 影片主表
  * </p>
  *
- * @author fwj
+ * @author liaohao
  * @since 2019-11-28
  */
 @TableName("mtime_film_info_t")

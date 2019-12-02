@@ -29,7 +29,7 @@ public class EntityGenerator {
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
-        gc.setOutputDir("D:\\Program_Software\\IntelliJ_IDEA\\GunsProjects\\cinema\\guns\\guns-rest\\src\\test\\java");//这里写你自己的java目录
+        gc.setOutputDir("D:\\me_Workspaces\\3rdObject\\alone\\CinemaProject\\guns-gateway\\src\\main\\java");//这里写你自己的java目录
         gc.setFileOverride(true);//是否覆盖
         gc.setActiveRecord(true);
         gc.setEnableCache(false);// XML 二级缓存
@@ -51,14 +51,14 @@ public class EntityGenerator {
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("123456");
-        dsc.setUrl("jdbc:mysql://127.0.0.1:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8");
+        dsc.setUrl("jdbc:mysql://192.168.48.5:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8");
         mpg.setDataSource(dsc);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         //strategy.setTablePrefix(new String[]{"_"});// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"user"});
+        strategy.setInclude(new String[]{"mtime_user_t"});
         mpg.setStrategy(strategy);
 
         // 包配置
@@ -67,9 +67,9 @@ public class EntityGenerator {
         pc.setEntity("com.stylefeng.guns.rest.common.persistence.model");
         pc.setMapper("com.stylefeng.guns.rest.common.persistence.dao");
         pc.setXml("com.stylefeng.guns.rest.common.persistence.dao.mapping");
-        pc.setService("com.stylefeng.guns.rest.common.service");       //本项目没用，生成之后删掉
-        pc.setServiceImpl("com.stylefeng.guns.rest.common.service.impl");   //本项目没用，生成之后删掉
-//        pc.setController("com.stylefeng.guns.rest.modular");    //本项目没用，生成之后删掉
+        pc.setService("TTT");       //本项目没用，生成之后删掉
+        pc.setServiceImpl("TTT");   //本项目没用，生成之后删掉
+//        pc.setController("TTT");    //本项目没用，生成之后删掉
         mpg.setPackageInfo(pc);
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 设置的值

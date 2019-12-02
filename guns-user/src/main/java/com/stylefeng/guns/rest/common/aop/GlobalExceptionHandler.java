@@ -32,4 +32,16 @@ public class GlobalExceptionHandler extends BaseControllerExceptionHandler {
     public ErrorTip jwtException(JwtException e) {
         return new ErrorTip(BizExceptionEnum.TOKEN_ERROR.getCode(), BizExceptionEnum.TOKEN_ERROR.getMessage());
     }
+
+    /**
+     * 系统异常
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ResponseBody
+    public ErrorTip jwtException(Exception e) {
+        log.debug(e.getMessage());
+        return new ErrorTip(BizExceptionEnum.SYSTEM_ERROR.getCode(), BizExceptionEnum.SYSTEM_ERROR.getMessage());
+    }
+
 }
