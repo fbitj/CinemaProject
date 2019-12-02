@@ -4,12 +4,24 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.bo.UserInfoBO;
 import com.guns.service.user.UserService;
 import com.guns.vo.BaseRespVO;
+import com.stylefeng.guns.rest.config.properties.JwtProperties;
+import io.jsonwebtoken.Jwt;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "user")
 public class UserController {
+
+    @Autowired
+    JwtProperties jwtProperties;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Reference(interfaceClass = UserService.class, check = false)
     private UserService userService;
@@ -49,4 +61,14 @@ public class UserController {
         }
         return BaseRespVO.sysError();
     }
+
+    @RequestMapping("logout")
+    public BaseRespVO logout(HttpServletRequest request) {
+        String token = request.getHeader(jwtProperties.getHeader());
+        if (token != null && redisTemplate.delete(token)) {
+            return BaseRespVO.ok("成功退出");
+        }
+        return BaseRespVO.buzError("退出失败，用户尚未登录");
+    }
+
 }

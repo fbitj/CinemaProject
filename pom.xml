@@ -15,9 +15,10 @@
         <module>guns-generator</module>
         <module>guns-user</module>
         <module>guns-film</module>
-        <module>guns-cinema</module>
         <module>guns-gateway</module>
         <module>guns-api</module>
+        <module>guns-orders</module>
+        <module>guns-cinemas</module>
     </modules>
 
     <parent>

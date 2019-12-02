@@ -25,6 +25,8 @@ public class JwtProperties {
 
     private String md5Key = "randomKey";
 
+    private String url;
+
     public static String getJwtPrefix() {
         return JWT_PREFIX;
     }
@@ -67,5 +69,13 @@ public class JwtProperties {
 
     public void setMd5Key(String md5Key) {
         this.md5Key = md5Key;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

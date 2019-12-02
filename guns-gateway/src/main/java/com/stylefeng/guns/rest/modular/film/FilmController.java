@@ -15,19 +15,19 @@ import java.util.Map;
 @RequestMapping("film")
 public class FilmController {
 
-    @Reference(interfaceClass = BannerService.class)
+    @Reference(interfaceClass = BannerService.class, check = false)
     BannerService bannerService;
 
-    @Reference(interfaceClass = FilmService.class)
+    @Reference(interfaceClass = FilmService.class, check = false)
     FilmService filmService;
 
-    @Reference(interfaceClass = CatService.class)
+    @Reference(interfaceClass = CatService.class, check = false)
     CatService catService;
 
-    @Reference(interfaceClass = SourceService.class)
+    @Reference(interfaceClass = SourceService.class, check = false)
     SourceService sourceService;
 
-    @Reference(interfaceClass = YearService.class)
+    @Reference(interfaceClass = YearService.class, check = false)
     YearService yearService;
 
     @RequestMapping("getIndex")
