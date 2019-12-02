@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.guns.service.cinema.IMtimeBrandDictTService;
 import com.guns.service.cinema.IMtimeCinemaTService;
 import com.guns.utils.String2Array;
@@ -70,12 +71,16 @@ public class MtimeBrandDictTServiceImpl implements IMtimeBrandDictTService , Ser
 
 
     @Override
-    public  List getCinemas(Integer brandId, Integer districtId, Integer hallType){
+    public  List getCinemas(Integer brandId, Integer districtId, Integer hallType, Integer pageSize, Integer nowPage){
         ArrayList<Object> list = new ArrayList<>();
-        PageHelper pageHelper = new PageHelper();
+        PageHelper.startPage(nowPage,pageSize);
         List<MtimeBrandDictT> cinemaName = this.getCN(brandId);
+        PageInfo<MtimeBrandDictT> info = new PageInfo<>(cinemaName);
 
+        PageHelper.startPage(nowPage,pageSize);
         List<MtimeCinemaT> addressPrice = cinemaTService.getAddressPrice(districtId);
+        PageInfo<MtimeCinemaT> mtimeCinemaTPageInfo = new PageInfo<>(addressPrice);
+
         if(cinemaName.size() == 0 || addressPrice.size() == 0){
             return new ArrayList();
         }

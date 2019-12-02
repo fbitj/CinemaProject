@@ -74,7 +74,7 @@ public class CinemaController {
     @RequestMapping("getCinemas")
     public GetCinemasVo getCinemas(Integer brandId, Integer hallType, Integer areaId, Integer pageSize, Integer nowPage){
         GetCinemasVo<Object> cinemasVo = new GetCinemasVo<>();
-        List cinemas = brandDictTService.getCinemas(brandId, areaId, hallType);
+        List cinemas = brandDictTService.getCinemas(brandId, areaId, hallType,pageSize,nowPage);
         cinemasVo.setStatus(0);
         cinemasVo.setNowPage(1);
         cinemasVo.setTotalPage(cinemas.size());

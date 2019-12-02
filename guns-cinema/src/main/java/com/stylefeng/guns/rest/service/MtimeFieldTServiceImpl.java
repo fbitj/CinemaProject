@@ -88,7 +88,8 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
         map3.put("price",mtimeFieldT.getPrice());
         MtimeHallDictT gethall = (MtimeHallDictT) hallDictTService.gethall(mtimeFieldT.getHallId());
         map3.put("seatFile",gethall.getSeatAddress());
-        List<MoocOrderT> orders = (List<MoocOrderT>) orderTService.getOrders(cinemaId, fieldId, o.getFilmId(), 1);
+        List<MoocOrderT> orders = (List<MoocOrderT>) orderTService.getOrder(cinemaId, fieldId, o.getFilmId());
+//        List<MoocOrderT> orders = (List<MoocOrderT>) orderTService.getOrders(cinemaId, fieldId, o.getFilmId(), 1);
         if(orders.size() == 0){
             map3.put("soldSeats","");
         }else{
@@ -96,9 +97,9 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
             for (MoocOrderT order : orders) {
                 sb.append(order.getSeatsIds()).append(",");
             }
+            //已购票座位,
             map3.put("soldSeats",sb.toString().substring(0,sb.toString().length() - 1));
         }
-//        map3.put("soldSeats","");//已购票座位,  完成订单后实现
         map.put("hallInfo",map3);
         return map;
     }

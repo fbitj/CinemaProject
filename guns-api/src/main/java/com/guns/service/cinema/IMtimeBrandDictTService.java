@@ -20,7 +20,7 @@ public interface IMtimeBrandDictTService extends Serializable {
 
     //List getCinemaNames(Integer bid);
 
-    List getCinemas(Integer brandId, Integer districtId, Integer hallType);
+    List getCinemas(Integer brandId, Integer districtId, Integer hallType, Integer pageSize, Integer nowPage);
 
 
 }
