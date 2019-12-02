@@ -1,4 +1,4 @@
-package com.stylefeng.guns.rest.service.Impl;//package com.stylefeng.guns.rest.service.impl;
+package com.stylefeng.guns.rest.service.impl;//package com.stylefeng.guns.rest.service.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.bo.UserInfoBO;
@@ -96,7 +96,8 @@ public class UserServiceImpl implements UserService {
         mtimeUserT.setNickName(userInfoVo.getNickname());
         mtimeUserT.setLifeState(userInfoVo.getLifeState());
         mtimeUserT.setUserSex(userInfoVo.getSex());
-        Integer integer = mtimeUserTMapper.updateAllColumnById(mtimeUserT);
+//        Integer integer = mtimeUserTMapper.updateAllColumnById(mtimeUserT);
+        Integer integer = mtimeUserTMapper.updateById(mtimeUserT);
         return integer;
     }
 
