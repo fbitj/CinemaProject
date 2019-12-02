@@ -25,6 +25,16 @@ mybatis-plus:
     lazyLoadingEnabled: true #延时加载的开关
     multipleResultSetsEnabled: true #开启的话，延时加载一个属性时会加载该对象全部属性，否则按需加载属性
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #打印sql语句,调试用
+spring:
+  application:
+    name: gun-gateway
+  dubbo:
+    registry: zookeeper://192.168.48.5:2181
+  datasource:
+    url: jdbc:mysql://192.168.48.5:3306/guns_rest?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    filters: log4j,wall,mergeStat
 
 
 logging:
