@@ -1,9 +1,12 @@
-package com.stylefeng.guns.rest.modular.film;
+package com.stylefeng.guns.rest.modular.film.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.guns.dto.FilmsDTO;
 import com.guns.service.film.*;
-import com.guns.vo.*;
+import com.guns.vo.BaseRespVO;
+import com.guns.vo.FilmListVO;
 import com.guns.vo.film.*;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +17,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("film")
 public class FilmController {
-
     @Reference(interfaceClass = BannerService.class, check = false)
     BannerService bannerService;
-
-    @Reference(interfaceClass = FilmService.class, check = false)
-    FilmService filmService;
 
     @Reference(interfaceClass = CatService.class, check = false)
     CatService catService;
@@ -29,6 +28,19 @@ public class FilmController {
 
     @Reference(interfaceClass = YearService.class, check = false)
     YearService yearService;
+
+    @Reference(interfaceClass = FilmService.class, check = false)
+    private FilmService filmService;
+
+    @RequestMapping("getFilms")
+    public FilmListVO getFilmsByConditions(FilmsDTO filmsDTo){
+        return filmService.getFilmsByConditions(filmsDTo);
+    }
+
+    @RequestMapping("films/{filmId}")
+    public FilmItemVO getFilmDetail(@PathVariable("filmId") Integer filmId) {
+        return filmService.getFilmDetail(filmId);
+    }
 
     /**
      * 首页显示
@@ -55,7 +67,8 @@ public class FilmController {
         data.put("top100", highScoreFilms);
 
         baseRespVO.setData(data);
-        baseRespVO.setImgPre(bannerVOList.get(0).getBannerUrl());
+        //baseRespVO.setImgPre(bannerVOList.get(0).getBannerUrl());
+        baseRespVO.setImgPre("http://img.meetingshop.cn/");
         baseRespVO.setStatus(0);
         return baseRespVO;
     }

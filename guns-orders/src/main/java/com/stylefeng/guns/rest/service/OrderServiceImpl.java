@@ -2,11 +2,13 @@ package com.stylefeng.guns.rest.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.guns.bo.FieldBO;
 import com.guns.bo.OrderBO;
 import com.guns.service.order.OrderService;
 import com.guns.vo.OrderVO;
+import com.stylefeng.guns.rest.bean.OrderStatus;
 import com.stylefeng.guns.rest.bean.SeatingChart;
 import com.stylefeng.guns.rest.common.persistence.dao.MoocOrderTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeFieldTMapper;
@@ -90,13 +92,15 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 验证座位是否已被购买
+     *
+     * @param fieldId
      * @param soldSeats
      * @return
      */
     @Override
-    public boolean verifyOrder(String[] soldSeats) {
+    public boolean verifyOrder(Integer fieldId, String[] soldSeats) {
         EntityWrapper<MoocOrderT> wrapper = new EntityWrapper<>();
-        wrapper.ne("order_status", 2);
+        wrapper.ne("order_status", 2).eq("field_id" ,fieldId);
         List<MoocOrderT> moocOrderTS = orderTMapper.selectList(wrapper);
         Set<String> seatList = new HashSet();
         int count = 0;
@@ -203,5 +207,85 @@ public class OrderServiceImpl implements OrderService {
         FieldBO target = new FieldBO();
         BeanUtils.copyProperties(mtimeFieldT, target);
         return target;
+    }
+
+    /**
+     * 获取用户所有订单并分页
+     * @param userId
+     * @param nowPage
+     * @param pageSize
+     * @return
+     */
+    @Override
+    public List selectOrderByUserId(Integer userId, Integer nowPage, Integer pageSize) {
+        Page<MoocOrderT> page = new Page<>(nowPage, pageSize, "order_time", false);
+        EntityWrapper<MoocOrderT> wrapper = new EntityWrapper<>();
+        wrapper.eq("order_user", userId);
+        List<MoocOrderT> moocOrderTS = orderTMapper.selectPage(page, wrapper);
+        List result = new ArrayList();
+        //封装参数
+        if (!CollectionUtils.isEmpty(moocOrderTS)) {
+            for (MoocOrderT moocOrderT : moocOrderTS) {
+                OrderVO orderVO = new OrderVO();
+                orderVO.setOrderId(moocOrderT.getUuid());
+                FieldBO fieldBO = selectFieldById(moocOrderT.getFieldId());
+                String beginTime = fieldBO.getBeginTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("M月d日 ");
+                orderVO.setFieldTime(simpleDateFormat.format(moocOrderT.getOrderTime()) + beginTime);
+                orderVO.setSeatsName(convertor(moocOrderT.getSeatsName()));
+                orderVO.setOrderPrice(moocOrderT.getOrderPrice().toString());
+                Integer orderStatus = moocOrderT.getOrderStatus();
+                if (orderStatus == 0) {
+                    orderVO.setOrderStatus(OrderStatus.ORDER_NOPAY.getMessage());
+                }
+                if (orderStatus == 1) {
+                    orderVO.setOrderStatus(OrderStatus.ORDER_ISPAY.getMessage());
+                }
+                if (orderStatus == 2) {
+                    orderVO.setOrderStatus(OrderStatus.ORDER_ISCLOSE.getMessage());
+                }
+                long time = moocOrderT.getOrderTime().getTime();
+                time = time / 1000;
+                orderVO.setOrderTimestamp(Long.toString(time));
+                orderVO.setFilmId(moocOrderT.getFilmId());
+                orderVO.setCinemaId(moocOrderT.getCinemaId());
+                result.add(orderVO);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 根据订单id查询订单详情
+     * @param orderId
+     * @return
+     */
+    @Override
+    public OrderBO selectOrderByOrderId(String orderId) {
+        EntityWrapper<MoocOrderT> wrapper = new EntityWrapper<>();
+        wrapper.eq("UUID", orderId);
+        List<MoocOrderT> moocOrderTS = orderTMapper.selectList(wrapper);
+    if (CollectionUtils.isEmpty(moocOrderTS) || moocOrderTS.size() != 1) throw new IllegalArgumentException();
+        MoocOrderT moocOrderT = moocOrderTS.get(0);
+        OrderBO orderBO = new OrderBO();
+        BeanUtils.copyProperties(moocOrderT, orderBO);
+        return orderBO;
+    }
+
+    /**
+     * 更改订单状态码
+     * @param orderStatus
+     * @return
+     */
+    @Override
+    public int changeOrderStatus(int orderStatus, String orderId) {
+        MoocOrderT moocOrderT = new MoocOrderT();
+        moocOrderT.setOrderStatus(orderStatus);
+        EntityWrapper<MoocOrderT> wrapper = new EntityWrapper<>();
+        wrapper.eq("UUID", orderId);
+        Integer update = orderTMapper.update(moocOrderT, wrapper);
+        if (update == 0) throw new IllegalArgumentException();
+        return update;
     }
 }

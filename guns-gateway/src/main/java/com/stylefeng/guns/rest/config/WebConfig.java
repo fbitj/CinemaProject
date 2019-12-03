@@ -9,11 +9,14 @@ import com.stylefeng.guns.rest.modular.auth.security.DataSecurityAction;
 import com.stylefeng.guns.rest.modular.auth.security.impl.Base64SecurityAction;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * web配置
@@ -22,7 +25,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @date 2017-08-23 15:48
  */
 @Configuration
-public class WebConfig {
+@ComponentScan("com.stylefeng.guns.rest.modular")
+public class WebConfig implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnProperty(prefix = RestProperties.REST_PREFIX, name = "auth-open", havingValue = "true", matchIfMissing = true)
@@ -66,5 +70,10 @@ public class WebConfig {
         template.setConnectionFactory(redisConnectionFactory);
         return template;
 
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/pic/**").addResourceLocations("file:D:/Develop & Learning/Project/Project3/pic/");
     }
 }

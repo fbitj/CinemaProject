@@ -19,6 +19,7 @@
         <module>guns-api</module>
         <module>guns-orders</module>
         <module>guns-cinemas</module>
+        <module>guns-pay</module>
     </modules>
 
     <parent>

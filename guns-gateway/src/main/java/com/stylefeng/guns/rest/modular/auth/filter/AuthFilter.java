@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -33,9 +34,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private RedisTemplate redisTemplate;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private JwtProperties jwtProperties;
@@ -71,7 +69,10 @@ public class AuthFilter extends OncePerRequestFilter {
         //User user = (User) redisTemplate.opsForValue().get(authToken);
         Object o = redisTemplate.opsForValue().get(authToken);
         if (o == null) {
-            RenderUtil.renderJson(response, BaseRespVO.buzError("用户尚未登录"));
+            BaseRespVO<Object> respVO = new BaseRespVO<>();
+            respVO.setStatus(700);
+            RenderUtil.renderJson(response, respVO);
+//            RenderUtil.renderJson(response, BaseRespVO.buzError("用户尚未登录"));
             return;
         }
 
