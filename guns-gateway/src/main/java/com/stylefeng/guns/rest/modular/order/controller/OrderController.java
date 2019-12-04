@@ -47,6 +47,15 @@ public class OrderController {
     @Reference(interfaceClass = PayService.class, check = false)
     PayService payService;
 
+    /**
+     * 购买座位
+     * @param fieldId
+     * @param soldSeats
+     * @param seatsName
+     * @param request
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("buyTickets")
     @Transactional
     public BaseRespVO buyTickets(Integer fieldId, String[] soldSeats, String[] seatsName, HttpServletRequest request) throws IOException {
@@ -87,6 +96,13 @@ public class OrderController {
         return BaseRespVO.ok(orderVO);
     }
 
+    /**
+     * 查看用户订单
+     * @param nowPage
+     * @param pageSize
+     * @param request
+     * @return
+     */
     @RequestMapping("getOrderInfo")
     public BaseRespVO getUserOrder(Integer nowPage, Integer pageSize, HttpServletRequest request) {
         String token = request.getHeader(jwtProperties.getHeader());
@@ -106,6 +122,12 @@ public class OrderController {
     }
 
     //支付模块
+
+    /**
+     * 生成支付二维码
+     * @param orderId
+     * @return
+     */
     @RequestMapping("getPayInfo")
     public BaseRespVO getPayCode(String orderId) {
         //查询订单详情
@@ -124,6 +146,12 @@ public class OrderController {
         return baseRespVO;
     }
 
+    /**
+     * 检验用户是否在规定时间内扫码支付
+     * @param orderId
+     * @param tryNums
+     * @return
+     */
     @RequestMapping("getPayResult")
     public BaseRespVO getPayResult(String orderId, Integer tryNums) {
         BaseRespVO baseRespVO = new BaseRespVO();

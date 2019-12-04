@@ -20,6 +20,7 @@
         <module>guns-orders</module>
         <module>guns-cinemas</module>
         <module>guns-pay</module>
+        <module>guns-promo</module>
     </modules>
 
     <parent>
