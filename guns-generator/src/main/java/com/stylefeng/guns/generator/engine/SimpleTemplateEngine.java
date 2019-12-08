@@ -56,7 +56,7 @@ public class SimpleTemplateEngine extends GunsTemplateEngine {
     protected void generateController() {
         String controllerPath = ToolUtil.format(super.getContextConfig().getProjectPath() + super.getControllerConfig().getControllerPathTemplate(),
                 ToolUtil.firstLetterToUpper(super.getContextConfig().getBizEnName()));
-        generateFile(super.getContextConfig().getTemplatePrefixPath() + "/Controller.java.btl", controllerPath);
+        generateFile(super.getContextConfig().getTemplatePrefixPath() + "/controller.java.btl", controllerPath);
         System.out.println("生成控制器成功!");
     }
 

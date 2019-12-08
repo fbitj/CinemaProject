@@ -6,19 +6,24 @@ guns-api ：dubbo公共API微服务接口模块
 guns-user ：用户模块
 guns-film：影片模块
 guns-cinema：影院模块
+guns-order:订单模块
+guns-promo：秒杀模块
 
 不同项目模块的端口分配规范（已经写好了）
-guns-gateway：8080
+guns-gateway：80
 guns-user：8081
 guns-film：8082
 guns-cinema：8083
+guns-order：
+guns-promo：
 
 
 dubbo端口分配规范（已经写好了）
 guns-user：20880
 guns-film：20881
 guns-cinema：20882
-
+guns-order：
+guns-promo：
 
 api模块规范
 service包：放微服务提供的公共接口
@@ -41,3 +46,10 @@ mapper接口、mapper.xml、数据库对应的Bean通过代码生成器自动生
 1.只需要把bean、mapper接口、mapper.xml生成在对应包中，其它生成在TTT包中，之后可把TTT包删除。
 2.生成代码时注意按情况修改输出目录、数据库配置、表配置、包配置
 
+#个人配置#
+// 192.168.48.5为虚拟机
+redis：localhost:6379——用于token验证（缓存暂未开始）
+zookeeper：192.168.48.5:2181——注册中心
+Nginx：192.168.48.5:80（做负载均衡，将请求转发到gateway——localhost:80）
+swagger2：接口文档——没有配置
+hibernate Validation：进行数据校验——没有配置

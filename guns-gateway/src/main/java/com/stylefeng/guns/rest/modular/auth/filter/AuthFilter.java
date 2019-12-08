@@ -63,7 +63,7 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
         // 登录成功则更新用户在Redis中的过期时间
-        redisTemplate.expire(authToken, 60 * 5, TimeUnit.SECONDS);
+        redisTemplate.expire(authToken, 10, TimeUnit.MINUTES);
         // 将token值保存在request域中
         request.setAttribute("token", authToken);
         chain.doFilter(request, response);

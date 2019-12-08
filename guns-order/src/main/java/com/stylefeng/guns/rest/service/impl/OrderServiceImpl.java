@@ -6,11 +6,13 @@ import com.alipay.demo.trade.model.GoodsDetail;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.guns.service.order.OrderService;
 import com.guns.vo.BaseRespVO;
-import com.guns.vo.OrderVO;
+import com.guns.vo.order.OrderVO;
+import com.guns.vo.order.OrdersInfoVO;
 import com.stylefeng.guns.rest.common.exception.OrderException;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,8 +31,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private MoocOrderTMapper orderTMapper;
 
-    private Main main = new Main();
-
+    @Autowired
+    private Main main;
     @Override
     public Boolean isTrueSeats(Integer filedId, String seatIds) {
         // 根据场次id获取到场次的座位信息
@@ -114,7 +116,8 @@ public class OrderServiceImpl implements OrderService {
         moocOrderT.setOrderTime(new Date());
         moocOrderT.setOrderUser(userId);
         moocOrderT.setOrderStatus(0);
-        orderTMapper.insert(moocOrderT);
+//        orderTMapper.insert(moocOrderT);
+        orderTMapper.insertAllColumn(moocOrderT);
         OrderVO orderVo = packagingOrderVO(moocOrderT, mtimeFieldT);
         return orderVo;
     }
@@ -140,6 +143,10 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setOrderStatus(moocOrderT.getOrderStatus());
         return orderVO;
     }
+    @Value("${mall.aliyun.oss.end-point}")
+    private String endPoint;
+    @Value("${mall.aliyun.oss.bucket}")
+    private String bucket;
 
     /**
      * 获取支付二维码
@@ -167,7 +174,6 @@ public class OrderServiceImpl implements OrderService {
         String totalAmount = moocOrderT.getOrderPrice().toString();
         String undiscountableAmount = "0";
         // 生成二维码
-
         Map<String, String> res = main.test_trade_precreate(outTradeNo, totalAmount, undiscountableAmount, goodsDetailList);
         String code = res.get("code");
         BaseRespVO objectBaseRespVO = new BaseRespVO();
@@ -177,7 +183,7 @@ public class OrderServiceImpl implements OrderService {
             data.put("qRCodeAddress", res.get("filePath"));
             objectBaseRespVO.setStatus(0);
             objectBaseRespVO.setData(data);
-            objectBaseRespVO.setImgPre("http://192.168.48.1:8084");
+            objectBaseRespVO.setImgPre("http://"+bucket+"."+endPoint+"/");
         } else {
             objectBaseRespVO.setStatus(700);
             objectBaseRespVO.setMsg("支付失败");
@@ -209,6 +215,24 @@ public class OrderServiceImpl implements OrderService {
             objectBaseRespVO.setStatus(100);
             objectBaseRespVO.setMsg("支付失败");
         }
-        return null;
+        return objectBaseRespVO;
+    }
+
+        /*
+            "orderId":"18392981493",
+			"filmName":"基于SpringBoot 十分钟搞定后台管理平台",
+			"fieldTime":"9月8号 11:50",
+			"cinemaName":"万达影城(顺义金街店)",
+			"seatsName":"1排3座 1排4座 2排4座",
+			"orderPrice":"120",
+			"orderStatus”:”已关闭”
+        */
+    @Override
+    public BaseRespVO<List<OrdersInfoVO>> getOrderInfoByPage(Integer nowPage, Integer pageSize, int userId) {
+        List<OrdersInfoVO> ordersInfoVOS = orderTMapper.selectUserOrderFriendly(userId);
+        BaseRespVO<List<OrdersInfoVO>> OrdersInfo = new BaseRespVO<>();
+        OrdersInfo.setStatus(0);
+        OrdersInfo.setData(ordersInfoVOS);
+        return OrdersInfo;
     }
 }

@@ -1,4 +1,4 @@
-package com.guns.vo;
+package com.guns.vo.order;
 
 import lombok.Data;
 

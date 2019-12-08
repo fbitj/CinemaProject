@@ -20,7 +20,7 @@ public class ControllerConfig {
     public void init() {
         ArrayList<String> imports = new ArrayList<>();
         imports.add(contextConfig.getCoreBasePackage() + ".base.controller.BaseController");
-        imports.add("org.springframework.stereotype.Controller");
+        imports.add("org.springframework.stereotype.controller");
         imports.add("org.springframework.web.bind.annotation.RequestMapping");
         imports.add("org.springframework.web.bind.annotation.ResponseBody");
         imports.add("org.springframework.ui.Model");
@@ -32,7 +32,7 @@ public class ControllerConfig {
         imports.add(contextConfig.getProPackage() + ".modular." + contextConfig.getModuleName() + ".service" + ".I" + contextConfig.getEntityName() + "Service");
         this.imports = imports;
         this.packageName = contextConfig.getProPackage() + ".modular." + contextConfig.getModuleName() + ".controller";
-        this.controllerPathTemplate = "\\src\\main\\java\\"+contextConfig.getProPackage().replaceAll("\\.","\\\\")+"\\modular\\" + contextConfig.getModuleName() + "\\controller\\{}Controller.java";
+        this.controllerPathTemplate = "\\src\\main\\java\\"+contextConfig.getProPackage().replaceAll("\\.","\\\\")+"\\modular\\" + contextConfig.getModuleName() + "\\controller\\{}controller.java";
     }
 
     public String getPackageName() {

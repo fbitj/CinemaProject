@@ -1,7 +1,10 @@
 package com.guns.service.order;
 
 import com.guns.vo.BaseRespVO;
-import com.guns.vo.OrderVO;
+import com.guns.vo.order.OrderVO;
+import com.guns.vo.order.OrdersInfoVO;
+
+import java.util.List;
 
 public interface OrderService {
     /**
@@ -37,6 +40,20 @@ public interface OrderService {
      */
     BaseRespVO getPayCode(String orderId);
 
+    /**
+     * 获取订单支付结果
+     * @param orderId
+     * @param tryNums
+     * @return
+     */
     BaseRespVO getPayResult(String orderId,Integer tryNums);
 
+    /**
+     * 分页查询用户订单信息
+     * @param nowPage 当前页
+     * @param pageSize 每页数量
+     * @param userId 用户id
+     * @return
+     */
+    BaseRespVO<List<OrdersInfoVO>> getOrderInfoByPage(Integer nowPage, Integer pageSize, int userId);
 }

@@ -20,4 +20,14 @@
         update mooc_order_t set order_status = 1 where uuid = #{orderId}
     </update>
 
+    <select id="selectUserOrderFriendly" resultType="com.guns.vo.order.OrdersInfoVO">
+        select o.UUID as orderId, f.film_name as filmName, fd.begin_time as fieldTime, c.cinema_name as cinemaName, o.seats_name as seatsName, o.order_price as orderPrice, o.order_status as orderStatus, o.order_time as orderTimestamp
+        from mooc_order_t o
+        LEFT JOIN mtime_field_t fd on o.field_id = fd.UUID
+        LEFT JOIN mtime_film_t f on o.film_id = f.UUID
+        LEFT JOIN mtime_cinema_t c on o.cinema_id = c.UUID
+        where o.order_user = #{userId}
+    </select>
+
+
 </mapper>

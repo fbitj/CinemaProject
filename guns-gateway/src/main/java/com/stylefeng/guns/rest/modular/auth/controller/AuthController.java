@@ -53,9 +53,11 @@ public class AuthController {
         // 生成randomKey和token
         final String randomKey = jwtTokenUtil.getRandomKey();
         final String token = jwtTokenUtil.generateToken(authRequest.getUserName(), randomKey);
+        System.out.println(token);
         // 在Redis中保存token和用户数据，key为token，用户数据为value
-        redisTemplate.opsForValue().set(token, userCacheVO);
-        redisTemplate.expire(token, 60*5, TimeUnit.SECONDS);
+//        redisTemplate.opsForValue().set(token, userCacheVO);
+//        redisTemplate.expire(token, 60*5, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(token,userCacheVO,10,TimeUnit.DAYS);
         // 返回正确的应答报文
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put("randomKey", randomKey);

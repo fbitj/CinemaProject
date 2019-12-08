@@ -1,6 +1,6 @@
 package com.stylefeng.guns.rest.order;
 
-import com.guns.vo.OrderVO;
+import com.guns.vo.order.OrderVO;
 import com.stylefeng.guns.rest.service.impl.OrderServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;

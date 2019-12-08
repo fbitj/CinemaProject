@@ -10,6 +10,7 @@ import com.guns.vo.UserInfoVo;
 import com.stylefeng.guns.rest.common.exception.CustomException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -31,6 +32,9 @@ public class UserController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Value("${jwt.header}")
+    private String tokenHeader;
 
     /**
      * 用户注册
@@ -71,7 +75,7 @@ public class UserController {
 
     @RequestMapping(value = "getUserInfo")
     public BaseRespVO<UserInfoVo> getUserInfo(HttpServletRequest request) throws CustomException {
-        String token = (String) request.getAttribute("token");
+        String token = request.getHeader(tokenHeader).substring(7);
         UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
         BaseRespVO<UserInfoVo> repv = new BaseRespVO<>();
         String username = userCacheVO.getUserName();
@@ -106,10 +110,12 @@ public class UserController {
     }
 
     // 用户登出
+
+
     @RequestMapping("logout")
     public BaseRespVO logout(HttpServletRequest request) {
         // 从reqeust域中，获得请求头中携带的token信息
-        String token = (String) request.getAttribute("token");
+        String token = (String) request.getHeader(tokenHeader).substring(7);
         // 在Redis中删除该用户信息
         Boolean delete = redisTemplate.delete(token);
         return BaseRespVO.ok("成功退出");
