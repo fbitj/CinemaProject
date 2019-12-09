@@ -2,10 +2,12 @@ package com.stylefeng.guns.rest.service;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.domain.TradeFundBill;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
@@ -15,18 +17,16 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.guns.service.cinema.*;
 import com.guns.utils.String2Array;
-import com.guns.vo.cinema.SeatsJson;
 import com.stylefeng.guns.rest.common.persistence.dao.MoocOrderTMapper;
 import com.stylefeng.guns.rest.common.persistence.dao.MtimeFilmTMapper;
 import com.stylefeng.guns.rest.common.persistence.model.*;
 import com.stylefeng.guns.rest.component.AliyunComponent;
-import org.apache.commons.collections.CollectionUtils;
+import com.stylefeng.guns.rest.roketmq.MqProducer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import trade.Main;
 import trade.config.Configs;
 import trade.model.ExtendParams;
 import trade.model.GoodsDetail;
@@ -36,7 +36,6 @@ import trade.model.result.AlipayF2FPrecreateResult;
 import trade.model.result.AlipayF2FQueryResult;
 import trade.service.AlipayMonitorService;
 import trade.service.AlipayTradeService;
-import trade.service.impl.AlipayMonitorServiceImpl;
 import trade.service.impl.AlipayTradeServiceImpl;
 import trade.service.impl.AlipayTradeWithHBServiceImpl;
 import trade.utils.Utils;
@@ -67,6 +66,8 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
     IMtimeHallDictTService hallDictTService;
     @Autowired
     AliyunComponent aliyunComponent;
+    @Autowired
+    MqProducer mqProducer;
 
 
 
@@ -126,8 +127,14 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
 
         ArrayList<Integer> integers = String2Array.string2Arrays(substring);
         ArrayList<Integer> integers1 = String2Array.string2Arrays(soldSeats);
-        boolean b = org.apache.commons.collections.CollectionUtils.containsAny(integers, integers1);
-        return b;
+
+        int size = integers.size();
+        integers.removeAll(integers1);
+        integers.addAll(integers1);
+        if(size == integers.size()){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -144,9 +151,15 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
                 objects.add(integer);
             }
         }
+        int size = objects.size();
         ArrayList<Integer> integers = String2Array.string2Arrays(soldSeats);
-        boolean b = CollectionUtils.containsAny(objects, integers);
-        return b;
+
+        objects.removeAll(integers);
+        objects.addAll(integers);
+        if(size == objects.size()){
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -199,6 +212,20 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
         moocOrderT.setOrderStatus(0);
         orderTMapper.insert(moocOrderT);
 
+       /* //设置定时器，5分半后若订单还未支付，则返回库存
+        Runnable runnable = new Runnable(){
+            @Override
+            public void run() {
+                updataOrderSeats(uuid);
+            }
+        };
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleWithFixedDelay(runnable, 300, 50, TimeUnit.SECONDS);*/
+
+       // 消息中间件发送一个延时消息， 延时5分钟，然后查看订单状态是否改变，
+       // 如果没有改变则关闭订单， 返回库存
+       mqProducer.updateStockDelayed(uuid);
+
         //返回数据
         HashMap<Object, Object> map = new HashMap<>();
         map.put("orderId",uuid);
@@ -228,12 +255,19 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
                 MtimeCinemaT cine = (MtimeCinemaT) cinemaTService.getCine(moocOrderT.getCinemaId());
                 Wrapper<MtimeFilmT> film = wrapper1.eq("UUID", moocOrderT.getFilmId());
                 List<MtimeFilmT> filmTS = filmTMapper.selectList(film);
+                Integer fieldId = moocOrderT.getFieldId();
+                MtimeFieldT fields = (MtimeFieldT) fieldTService.getFields(fieldId);
 
                 HashMap<Object, Object> map = new HashMap<>();
                 map.put("orderId", moocOrderT.getUuid());
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("今天yyyy年MM月dd号 HH:mm:ss");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("播放时间: yyyy年MM月dd号 ");
                 String format = simpleDateFormat.format(moocOrderT.getOrderTime());
-                map.put("fieldTime", format);
+                //电影场次播放时间
+                map.put("fieldTime", format + fields.getBeginTime() + "--" + fields.getEndTime());
+                //下单时间
+                Date orderTime = moocOrderT.getOrderTime();
+                long time = orderTime.getTime();
+                map.put("orderTimestamp", time / 1000);
                 map.put("filmName", filmTS.get(0).getFilmName());
                 map.put("cinemaName", cine.getCinemaName());
                 map.put("seatsName", moocOrderT.getSeatsName());
@@ -264,7 +298,9 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
     @Override
     public String getImg(String orderId) {
         MoocOrderT order = (MoocOrderT) this.getOrderByUuid(orderId);
-
+        if (order.getOrderStatus() == 2 || order.getOrderStatus() == 1){
+            return "";
+        }
         EntityWrapper<MtimeFilmT> wrapper = new EntityWrapper<>();
         wrapper.eq("UUID", order.getFilmId());
         List<MtimeFilmT> mtimeFilmTS = filmTMapper.selectList(wrapper);
@@ -282,8 +318,6 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
     @Override
     public Map getPayRequest(String orderId) {
         HashMap<Object, Object> map = new HashMap<>();
-        Timer timer = new Timer();
-
 
         Integer integer = this.test_trade_query(orderId);
         map.put("orderId", orderId);
@@ -319,6 +353,17 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
         return integer;
     }
 
+    @Override
+    public Integer updataOrderSeats(String orderId) {
+        EntityWrapper<MoocOrderT> wrapper = new EntityWrapper<>();
+        MoocOrderT moocOrderT = new MoocOrderT();
+        wrapper.eq("UUID", orderId);
+        moocOrderT.setSeatsIds("");
+        moocOrderT.setOrderStatus(2);
+        Integer update = orderTMapper.update(moocOrderT, wrapper);
+        return update;
+    }
+
 
     // 测试当面付2.0生成支付二维码
     public String test_trade_precreate(String orderId, String filmname,String cinameName, Double price, Integer quantity) {
@@ -333,16 +378,16 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
         tradeWithHBService = new AlipayTradeWithHBServiceImpl.ClientBuilder().build();
 
         /** 如果需要在程序中覆盖Configs提供的默认参数, 可以使用ClientBuilder类的setXXX方法修改默认参数 否则使用代码中的默认设置 */
-        monitorService = new AlipayMonitorServiceImpl.ClientBuilder()
-                .setGatewayUrl("http://mcloudmonitor.com/gateway.do").setCharset("GBK")
-                .setFormat("json").build();
+//        monitorService = new AlipayMonitorServiceImpl.ClientBuilder()
+//                .setGatewayUrl("http://mcloudmonitor.com/gateway.do").setCharset("GBK")
+//                .setFormat("json").build();
 
         // (必填) 商户网站订单系统中唯一订单号，64个字符以内，只能包含字母、数字、下划线，
         // 需保证商户系统端不能重复，建议通过数据库sequence生成，
 //        String outTradeNo = "tradeprecreate" + System.currentTimeMillis()
 //                            + (long) (Math.random() * 10000000L);
         //这个是影院系统中的订单编号，需要保证唯一
-        String outTradeNo = "tradeprecreate" + orderId;
+        String outTradeNo = orderId;
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
         String subject = cinameName + "当面付扫码消费";
@@ -369,7 +414,8 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
         String storeId = "test_store_id";
 
         // 支付超时，定义为120分钟
-        String timeoutExpress = "120m";
+//        String timeoutExpress = "120m";
+        String timeoutExpress = "3m";
 
         // 业务扩展参数，目前可添加由支付宝分配的系统商编号(通过setSysServiceProviderId方法)，详情请咨询支付宝技术支持
         ExtendParams extendParams = new ExtendParams();
@@ -428,6 +474,10 @@ public class MoocOrderTServiceImpl implements IMoocOrderTService, Serializable {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
+                /*  放在本地用与校验
+                if(file.isFile()){
+                    file.delete();
+                }*/
                 return img;
 
             case FAILED:

@@ -24,7 +24,18 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
     /**
      * 其他
      */
-    AUTH_REQUEST_ERROR(400, "账号密码错误");
+    AUTH_REQUEST_ERROR(400, "账号密码错误"),
+
+    //秒杀订单流水号
+    STOCK_ID(501, "生成流水号异常"),
+
+    //生成订单出错
+    ORDER_SATUS(502, "生成订单出错")
+
+    ;
+
+
+
 
     BizExceptionEnum(int code, String message) {
         this.code = code;

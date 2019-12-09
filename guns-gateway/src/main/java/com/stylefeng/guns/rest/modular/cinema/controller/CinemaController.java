@@ -126,16 +126,24 @@ public class CinemaController {
         String token = request.getHeader("Authorization");
         token = token.substring(7);
         UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
-        Integer uuid = userCacheVO.getUuid();
         GetFieldInfo<Object> fieldInfo = new GetFieldInfo<>();
-        Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,uuid);
-        fieldInfo.setStatus(0);
-        fieldInfo.setImgPre("http://img.meetingshop.cn/");
-        fieldInfo.setData(fieldMessage);
+        if(userCacheVO == null){
+            fieldInfo.setStatus(-1);
+            fieldInfo.setImgPre("http://img.meetingshop.cn/");
+            fieldInfo.setData("请重新登陆");
+            return fieldInfo;
+        }
+        if(userCacheVO != null){
+            Integer uuid = userCacheVO.getUuid();
+            Object fieldMessage = fieldTService.getFieldMessage(cinemaId,fieldId,uuid);
+            fieldInfo.setStatus(0);
+            fieldInfo.setImgPre("http://img.meetingshop.cn/");
+            fieldInfo.setData(fieldMessage);
+            return fieldInfo;
+        }
         return fieldInfo;
         //eyJhbGciOiJIUzUxMiJ9.eyJyYW5kb21LZXkiOiJ3cHBxZ20iLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNTc1OTA0NzY4LCJpYXQiOjE1NzUyOTk5Njh9.--V1IHxPaz8SonBjyDsZUnCQpwCuyPgSNmsObx0jRMRaeJffMTT2G0KTFlC1BxszmjeZIitkfkLZ_H01gPuiMA
         //eyJhbGciOiJIUzUxMiJ9.eyJyYW5kb21LZXkiOiJ3cHBxZ20iLCJzdWIiOiJ1c2VyIiwiZXhwIjoxNTc1OTA0NzY4LCJpYXQiOjE1NzUyOTk5Njh9.--V1IHxPaz8SonBjyDsZUnCQpwCuyPgSNmsObx0jRMRaeJffMTT2G0KTFlC1BxszmjeZIitkfkLZ_H01gPuiMA
-
     }
 
     //tf

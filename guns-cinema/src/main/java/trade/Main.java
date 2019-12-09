@@ -289,7 +289,8 @@ public class Main {
     // 测试当面付2.0查询订单
     public void test_trade_query() {
         // (必填) 商户订单号，通过此商户订单号查询当面付的交易状态
-        String outTradeNo = "tradeprecreate123456";
+        String outTradeNo = "LOL123456";
+//        String outTradeNo = "8a4bd5875f3249f7f4726a";
 //        String outTradeNo = "tradeprecreate12345";
 
         // 创建查询请求builder，设置请求参数
@@ -377,7 +378,7 @@ public class Main {
 //                            + (long) (Math.random() * 10000000L);
         //这个是影院系统中的订单编号，需要保证唯一
         String orderId = "123456";
-        String outTradeNo = "tradeprecreate" + orderId;
+        String outTradeNo = "LOL" + orderId;
 
         // (必填) 订单标题，粗略描述用户的支付目的。如“xxx品牌xxx门店当面付扫码消费”
         String subject = "xxx影院当面付扫码消费";
@@ -408,7 +409,7 @@ public class Main {
         extendParams.setSysServiceProviderId("2088100200300400500");
 
         // 支付超时，定义为120分钟
-        String timeoutExpress = "120m";
+        String timeoutExpress = "3m";
 
         // 商品明细列表，需填写购买商品详细信息，
         List<GoodsDetail> goodsDetailList = new ArrayList<GoodsDetail>();

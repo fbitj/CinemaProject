@@ -108,10 +108,14 @@ public class UserController {
     // 用户登出
     @RequestMapping("logout")
     public BaseRespVO logout(HttpServletRequest request) {
-        // 从reqeust域中，获得请求头中携带的token信息
-        String token = (String) request.getAttribute("token");
+//         从reqeust域中，获得请求头中携带的token信息
+//        String token = (String) request.getAttribute("token");
+
         // 在Redis中删除该用户信息
-        Boolean delete = redisTemplate.delete(token);
+        String token = request.getHeader("Authorization").substring(7);
+        if(token != null){
+            Boolean delete = redisTemplate.delete(token);
+        }
         return BaseRespVO.ok("成功退出");
     }
 }

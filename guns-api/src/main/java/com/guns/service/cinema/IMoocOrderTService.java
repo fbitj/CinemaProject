@@ -31,4 +31,6 @@ public interface IMoocOrderTService {
     Map getPayRequest(String orderId);
 
     Integer updataOrderStatus(String orderId);
+
+    Integer updataOrderSeats(String orderId);
 }

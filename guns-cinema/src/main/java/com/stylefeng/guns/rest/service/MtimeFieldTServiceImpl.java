@@ -87,7 +87,7 @@ public class MtimeFieldTServiceImpl implements IMtimeFieldTService {
         map3.put("hallName",mtimeFieldT.getHallName());
         map3.put("price",mtimeFieldT.getPrice());
         MtimeHallDictT gethall = (MtimeHallDictT) hallDictTService.gethall(mtimeFieldT.getHallId());
-        map3.put("seatFile",gethall.getSeatAddress());
+        map3.put("seatFile", gethall.getSeatAddress());
         List<MoocOrderT> orders = (List<MoocOrderT>) orderTService.getOrder(cinemaId, fieldId, o.getFilmId());
 //        List<MoocOrderT> orders = (List<MoocOrderT>) orderTService.getOrders(cinemaId, fieldId, o.getFilmId(), 1);
         if(orders.size() == 0){

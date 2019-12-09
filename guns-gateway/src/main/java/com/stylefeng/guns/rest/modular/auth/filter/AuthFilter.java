@@ -51,6 +51,7 @@ public class AuthFilter extends OncePerRequestFilter {
         }
         // 判断请求头中是否携带Authorization请求头字段，即token字段
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
+        // !"/cinema/getFieldInfo".equals(servletPath)
         if (requestHeader == null || !requestHeader.startsWith("Bearer ")) {
             RenderUtil.renderJson(response, BaseRespVO.buzError("用户尚未登录"));
             return;
@@ -63,7 +64,7 @@ public class AuthFilter extends OncePerRequestFilter {
             return;
         }
         // 登录成功则更新用户在Redis中的过期时间
-        redisTemplate.expire(authToken, 60 * 5, TimeUnit.SECONDS);
+        redisTemplate.expire(authToken, 60 * 15, TimeUnit.SECONDS);
         // 将token值保存在request域中
         request.setAttribute("token", authToken);
         chain.doFilter(request, response);

@@ -64,6 +64,5 @@ public class GunsCinemaApplication {
     public static void main(String[] args) {
         SpringApplication.run(GunsCinemaApplication.class, args);
 
-
     }
 }

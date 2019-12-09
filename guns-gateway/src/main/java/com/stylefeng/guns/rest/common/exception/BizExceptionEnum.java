@@ -21,6 +21,10 @@ public enum BizExceptionEnum implements ServiceExceptionEnum {
      */
     SIGN_ERROR(700, "签名验证失败"),
 
+    OTHER_ERROR(503, "其它错误"),
+
+    ORDER_ERROR(504, "下单失败"),
+
     /**
      * 其他
      */

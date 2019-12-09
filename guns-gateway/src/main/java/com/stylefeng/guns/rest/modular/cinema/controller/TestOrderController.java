@@ -4,10 +4,12 @@ package com.stylefeng.guns.rest.modular.cinema.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.guns.service.cinema.IMoocOrderTService;
+import com.guns.vo.BaseRespVO;
 import com.guns.vo.UserCacheVO;
 import com.guns.vo.cinema.GetFieldInfo;
 import com.guns.vo.cinema.OrderVo;
 import com.guns.vo.cinema.TicketsVo;
+import com.stylefeng.guns.core.util.RenderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 /**
@@ -23,9 +26,11 @@ import java.util.HashMap;
  * @date 2019/12/1 20:40
  */
 @RestController
-//@RequestMapping("order")
+@RequestMapping("order")
 public class TestOrderController {
 
+
+    //RenderUtil.renderJson(response, BaseRespVO.buzError("用户尚未登录"));
 
     @Reference(interfaceClass = IMoocOrderTService.class, check = false)
     IMoocOrderTService orderTService;
@@ -33,6 +38,7 @@ public class TestOrderController {
     RedisTemplate redisTemplate;
 
 
+    //购票， 并创建订单
     /**
      * request
      * http://localhost/order/buyTickets
@@ -66,6 +72,12 @@ public class TestOrderController {
                 String token = request.getHeader("Authorization");
                 token = token.substring(7);
                 UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+                if(userCacheVO == null){
+                    orderVo.setStatus(700);
+                    orderVo.setMsg("");
+                    orderVo.setData("请重新登陆");
+                    return orderVo;
+                }
                 Integer uuid = userCacheVO.getUuid();
                 Object o = orderTService.buyTickets(fieldId, soldSeats, seatsName, uuid);
                 orderVo.setStatus(0);
@@ -85,6 +97,7 @@ public class TestOrderController {
     }
 
 
+    //查看个人订单
     /**r
      * request      /order/getOrderInfo
      * response
@@ -121,9 +134,15 @@ public class TestOrderController {
         String token = request.getHeader("Authorization");
         token = token.substring(7);
         UserCacheVO userCacheVO = (UserCacheVO) redisTemplate.opsForValue().get(token);
+        OrderVo orderVo = new OrderVo();
+        if(userCacheVO == null){
+            orderVo.setMsg("");
+            orderVo.setStatus(-1);
+            orderVo.setData("请重新登陆");
+            return orderVo;
+        }
         Integer uuid = userCacheVO.getUuid();
         Object userOrders = orderTService.getUserOrders(nowPage, pageSize, uuid);
-        OrderVo orderVo = new OrderVo();
         orderVo.setStatus(0);
         orderVo.setMsg("");
         orderVo.setData(userOrders);
@@ -152,7 +171,7 @@ public class TestOrderController {
         info.setStatus(0);
 //        info.setImgPre("http://img.meetingshop.cn/");
 //        http://cskaoyan.oss-cn-beijing.aliyuncs.com/316cb862f2c045d8b2a3d0106b92f097.jpg
-        info.setImgPre("http://cskaoyan.oss-cn-beijing.aliyuncs.com/");
+        info.setImgPre("http://springmall.oss-cn-beijing.aliyuncs.com/");
         String path = orderTService.getImg(orderId);
         HashMap<Object, Object> map = new HashMap<>();
         map.put("orderId",orderId);
@@ -179,11 +198,14 @@ public class TestOrderController {
      * }
      */
     @RequestMapping("getPayResult")
-    public GetFieldInfo getParResult(String orderId, Integer tryNums){
+    public GetFieldInfo getParResult(String orderId, Integer tryNums, HttpServletResponse response){
         GetFieldInfo<Object> info = new GetFieldInfo<>();
-        if(tryNums > 4){
+        if(tryNums > 12){
             info.setStatus(-1);
-            info.setData("超时");
+            info.setData("超时,二维码失效，订单支付失败");
+            //返回库存      弹出消息框，超时
+//            RenderUtil.renderJson(response, info);
+            orderTService.updataOrderSeats(orderId);
             return info;
         }
         HashMap<String, Object> map = (HashMap<String, Object>) orderTService.getPayRequest(orderId);
